@@ -1,0 +1,2 @@
+[console_scripts]
+arduino_interface_node = motor_controller.arduino_interface_node:main

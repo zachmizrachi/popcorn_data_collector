@@ -1,0 +1,37 @@
+[10.810s] Invoking command in '/home/pop/ros2_ws/src/motor_controller': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/pop/ros2_ws/src/build/motor_controller/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/pop/ros2_ws/src/install/motor_controller/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../build/motor_controller build --build-base /home/pop/ros2_ws/src/build/motor_controller/build install --record /home/pop/ros2_ws/src/build/motor_controller/install.log --single-version-externally-managed install_data
+[14.842s] running egg_info
+[14.849s] creating ../build/motor_controller/motor_controller.egg-info
+[15.078s] writing ../build/motor_controller/motor_controller.egg-info/PKG-INFO
+[15.087s] writing dependency_links to ../build/motor_controller/motor_controller.egg-info/dependency_links.txt
+[15.088s] writing entry points to ../build/motor_controller/motor_controller.egg-info/entry_points.txt
+[15.092s] writing requirements to ../build/motor_controller/motor_controller.egg-info/requires.txt
+[15.093s] writing top-level names to ../build/motor_controller/motor_controller.egg-info/top_level.txt
+[15.101s] writing manifest file '../build/motor_controller/motor_controller.egg-info/SOURCES.txt'
+[15.665s] reading manifest file '../build/motor_controller/motor_controller.egg-info/SOURCES.txt'
+[15.692s] writing manifest file '../build/motor_controller/motor_controller.egg-info/SOURCES.txt'
+[15.696s] running build
+[15.700s] running build_py
+[15.713s] creating /home/pop/ros2_ws/src/build/motor_controller/build
+[15.719s] creating /home/pop/ros2_ws/src/build/motor_controller/build/lib
+[15.719s] creating /home/pop/ros2_ws/src/build/motor_controller/build/lib/motor_controller
+[15.720s] copying motor_controller/__init__.py -> /home/pop/ros2_ws/src/build/motor_controller/build/lib/motor_controller
+[15.724s] copying motor_controller/arduino_interface_node.py -> /home/pop/ros2_ws/src/build/motor_controller/build/lib/motor_controller
+[15.724s] running install
+[15.807s] running install_lib
+[16.150s] creating /home/pop/ros2_ws/src/install/motor_controller/lib/python3.12/site-packages/motor_controller
+[16.151s] copying /home/pop/ros2_ws/src/build/motor_controller/build/lib/motor_controller/__init__.py -> /home/pop/ros2_ws/src/install/motor_controller/lib/python3.12/site-packages/motor_controller
+[16.156s] copying /home/pop/ros2_ws/src/build/motor_controller/build/lib/motor_controller/arduino_interface_node.py -> /home/pop/ros2_ws/src/install/motor_controller/lib/python3.12/site-packages/motor_controller
+[16.157s] byte-compiling /home/pop/ros2_ws/src/install/motor_controller/lib/python3.12/site-packages/motor_controller/__init__.py to __init__.cpython-312.pyc
+[16.161s] byte-compiling /home/pop/ros2_ws/src/install/motor_controller/lib/python3.12/site-packages/motor_controller/arduino_interface_node.py to arduino_interface_node.cpython-312.pyc
+[16.210s] running install_data
+[16.216s] creating /home/pop/ros2_ws/src/install/motor_controller/share/ament_index
+[16.216s] creating /home/pop/ros2_ws/src/install/motor_controller/share/ament_index/resource_index
+[16.217s] creating /home/pop/ros2_ws/src/install/motor_controller/share/ament_index/resource_index/packages
+[16.235s] copying resource/motor_controller -> /home/pop/ros2_ws/src/install/motor_controller/share/ament_index/resource_index/packages
+[16.236s] copying package.xml -> /home/pop/ros2_ws/src/install/motor_controller/share/motor_controller
+[16.237s] running install_egg_info
+[16.584s] Copying ../build/motor_controller/motor_controller.egg-info to /home/pop/ros2_ws/src/install/motor_controller/lib/python3.12/site-packages/motor_controller-0.0.0-py3.12.egg-info
+[16.608s] running install_scripts
+[18.656s] Installing arduino_interface_node script to /home/pop/ros2_ws/src/install/motor_controller/lib/motor_controller
+[18.657s] writing list of installed files to '/home/pop/ros2_ws/src/build/motor_controller/install.log'
+[18.952s] Invoked command in '/home/pop/ros2_ws/src/motor_controller' returned '0': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/pop/ros2_ws/src/build/motor_controller/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/pop/ros2_ws/src/install/motor_controller/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../build/motor_controller build --build-base /home/pop/ros2_ws/src/build/motor_controller/build install --record /home/pop/ros2_ws/src/build/motor_controller/install.log --single-version-externally-managed install_data
