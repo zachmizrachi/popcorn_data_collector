@@ -1,5 +1,7 @@
+#!/usr/bin/env python3
 import rclpy
 from rclpy.node import Node
+from std_msgs.msg import String
 import serial
 import time
 import threading
@@ -22,17 +24,22 @@ class ArduinoInterfaceNode(Node):
             self.get_logger().error(f"❌ Failed to connect to Arduino on {self.serial_port}")
             self.arduino = None
 
-        # Start a timer to continuously read serial data
+        # === ROS Subscriber ===
+        self.create_subscription(String, '/arduino_command', self.ros_command_callback, 10)
+        self.get_logger().info("📡 Subscribed to /arduino_command topic")
+
+        # === Serial read timer ===
         self.create_timer(0.1, self.read_from_arduino)
 
-        # Start keyboard thread
+        # === Keyboard listener ===
         self.keep_running = True
         self.keyboard_thread = threading.Thread(target=self.keyboard_listener, daemon=True)
         self.keyboard_thread.start()
 
-        # Show menu
+        # Show initial menu
         self.print_command_menu()
 
+    # ---------------- Command Menu ----------------
     def print_command_menu(self):
         print("\n=== Command Menu ===")
         print("1 - Run Stepper")
@@ -46,6 +53,7 @@ class ArduinoInterfaceNode(Node):
         print("q - Quit")
         print("====================\n")
 
+    # ---------------- Keyboard Input ----------------
     def keyboard_listener(self):
         """Run in a background thread to capture keyboard input."""
         while self.keep_running:
@@ -69,6 +77,18 @@ class ArduinoInterfaceNode(Node):
             except Exception as e:
                 self.get_logger().error(f"Keyboard input error: {e}")
 
+    # ---------------- ROS Topic Input ----------------
+    def ros_command_callback(self, msg: String):
+        """Handle commands received from ROS topic."""
+        command = msg.data.strip()
+        if not command:
+            self.get_logger().warn("⚠️ Empty command received on /arduino_command")
+            return
+
+        self.get_logger().info(f"📩 Received ROS command: '{command}'")
+        self.send_command(command)
+
+    # ---------------- Serial Write ----------------
     def send_command(self, command):
         """Send a single-character command to Arduino."""
         if not self.arduino:
@@ -77,10 +97,11 @@ class ArduinoInterfaceNode(Node):
 
         try:
             self.arduino.write(command.encode())
-            self.get_logger().info(f"➡ Sent command: {command}")
+            self.get_logger().info(f"➡ Sent command to Arduino: {command}")
         except serial.SerialException as e:
             self.get_logger().error(f"Serial error: {e}")
 
+    # ---------------- Serial Read ----------------
     def read_from_arduino(self):
         """Continuously read responses from Arduino."""
         if not self.arduino:
@@ -94,8 +115,9 @@ class ArduinoInterfaceNode(Node):
         except serial.SerialException as e:
             self.get_logger().error(f"Serial read error: {e}")
 
+    # ---------------- Cleanup ----------------
     def destroy_node(self):
-        """Clean up serial."""
+        """Clean up serial and threads."""
         self.keep_running = False
         if self.arduino:
             self.arduino.close()
