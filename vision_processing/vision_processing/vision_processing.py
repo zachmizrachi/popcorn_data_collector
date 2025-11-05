@@ -27,68 +27,95 @@ class VisionProcessing(Node):
         self.state_publisher = self.create_publisher(String, '/kernel_state', 10)
         self.debug_image_pub = self.create_publisher(Image, '/receive_kernel_debug', 10)
 
-        # Parameters
-        self.center_circle_radius = 100   # circle radius in pixels
-        self.blur_ksize = (5, 5)          # Gaussian blur kernel size
-        self.brightness_factor = 1.2      # Brightness control factor
+        # Processing parameters
+        self.center_circle_radius = 100
+        self.blur_ksize = (5, 5)
+        self.brightness_factor = 1.2
 
-        # For pixel difference
+        # HSV range for yellow/white detection
+        self.lower_yellow = np.array([15, 40, 120])
+        self.upper_yellow = np.array([45, 255, 255])
+
+        # Initialization / calibration
         self.ref_frame = None
-        self.get_logger().info("👁️ VisionProcessing node started with yellow filter enabled")
+        self.init_diffs = []
+        self.init_frame_count = 30  # number of frames to average during "initializing"
+        self.avg_diff = None
+        self.state = "initializing"
+
+        self.get_logger().info("👁️ VisionProcessing node started (state: initializing)")
 
     def image_callback(self, msg: Image):
         try:
-            # Convert ROS Image to OpenCV
             cv_image = self.bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
             height, width = cv_image.shape[:2]
 
-            # === Step 1: Create circular mask ===
+            # === Step 1: Mask ===
             mask = np.zeros((height, width), dtype=np.uint8)
             cv2.circle(mask, (width // 2, height // 2), self.center_circle_radius, 255, -1)
             masked_image = cv2.bitwise_and(cv_image, cv_image, mask=mask)
 
-            # === Step 2: Convert to HSV for color filtering ===
+            # === Step 2: Yellow/white filter ===
             hsv = cv2.cvtColor(masked_image, cv2.COLOR_BGR2HSV)
-
-            # Define yellow color range in HSV
-            lower_yellow = np.array([20, 100, 100])  # lower bound (H, S, V)
-            upper_yellow = np.array([35, 255, 255])  # upper bound (H, S, V)
-            yellow_mask = cv2.inRange(hsv, lower_yellow, upper_yellow)
-
-            # Apply yellow mask to image
+            yellow_mask = cv2.inRange(hsv, self.lower_yellow, self.upper_yellow)
             yellow_filtered = cv2.bitwise_and(masked_image, masked_image, mask=yellow_mask)
 
-            # === Step 3: Apply blur and brightness ===
+            # === Step 3: Blur and brightness ===
             blurred = cv2.GaussianBlur(yellow_filtered, self.blur_ksize, 0)
             bright = cv2.convertScaleAbs(blurred, alpha=self.brightness_factor, beta=0)
+            gray = cv2.cvtColor(bright, cv2.COLOR_BGR2GRAY)
 
-            # === Step 4: Set reference frame if none exists ===
+            # === Step 4: Reference frame handling ===
             if self.ref_frame is None:
-                self.ref_frame = cv2.cvtColor(bright, cv2.COLOR_BGR2GRAY)
-                self.get_logger().info("Reference frame set (yellow-filtered masked region)")
-                state_msg = String()
-                state_msg.data = 'wait_for_kernel'
-                self.state_publisher.publish(state_msg)
+                self.ref_frame = gray.copy()
+                self.get_logger().info("Reference frame captured")
                 return
 
-            # === Step 5: Pixel difference ===
-            gray = cv2.cvtColor(bright, cv2.COLOR_BGR2GRAY)
             diff = cv2.absdiff(gray, self.ref_frame)
             diff_value = np.sum(diff)
-            self.get_logger().info(f"Pixel difference: {diff_value}")
 
-            # === Step 6: Simple threshold-based kernel presence ===
-            kernel_present = diff_value > 50000  # adjust threshold
-            state_msg = String()
-            state_msg.data = 'kernel_detected' if kernel_present else 'wait_for_kernel'
-            self.state_publisher.publish(state_msg)
+            # === State machine ===
+            if self.state == "initializing":
+                self.init_diffs.append(diff_value)
+                self.get_logger().info(f"Initializing... frame {len(self.init_diffs)}/{self.init_frame_count}")
+                if len(self.init_diffs) >= self.init_frame_count:
+                    self.avg_diff = np.mean(self.init_diffs)
+                    self.state = "wait_for_kernel"
+                    self.get_logger().info(f"Initialization complete ✅ avg diff = {self.avg_diff:.2f}")
+                    self.publish_state("wait_for_kernel")
 
-            # === Step 7: Publish debug view ===
+            elif self.state == "wait_for_kernel":
+                # Calculate percent change relative to average baseline
+                if self.avg_diff and self.avg_diff > 0:
+                    percent_change = ((diff_value - self.avg_diff) / self.avg_diff) * 100.0
+                    self.get_logger().info(f"Percent change: {percent_change:.2f}%")
+                else:
+                    percent_change = 0.0
+
+                # Decide kernel presence based on % increase
+                kernel_present = percent_change > 100.0  # adjust sensitivity threshold
+                if kernel_present:
+                    self.state = "kernel_detected"
+                    self.publish_state("kernel_detected")
+                    self.get_logger().info("🌽 Kernel detected!")
+                else:
+                    self.publish_state("wait_for_kernel")
+
+            elif self.state == "kernel_detected":
+                # You can choose to reset after detection if needed
+                pass
+
+            # === Step 5: Publish debug image ===
             debug_msg = self.bridge.cv2_to_imgmsg(bright, encoding='bgr8')
             self.debug_image_pub.publish(debug_msg)
 
         except CvBridgeError as e:
             self.get_logger().error(f"CV Bridge Error: {e}")
+
+    def publish_state(self, state_str):
+        msg = String()
+        msg.data = state_str
+        self.state_publisher.publish(msg)
 
 
 def main(args=None):
