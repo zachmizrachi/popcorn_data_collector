@@ -1,0 +1,5 @@
+[0.000000] (-) TimerEvent: {}
+[0.002785] (-) JobUnselected: {'identifier': 'controller'}
+[0.003211] (-) JobUnselected: {'identifier': 'image_viewer'}
+[0.003386] (-) JobUnselected: {'identifier': 'motor_controller'}
+[0.007360] (-) EventReactorShutdown: {}

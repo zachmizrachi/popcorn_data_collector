@@ -1,0 +1,405 @@
+[0.000000] (-) TimerEvent: {}
+[0.000602] (controller) JobQueued: {'identifier': 'controller', 'dependencies': OrderedDict()}
+[0.001251] (image_viewer) JobQueued: {'identifier': 'image_viewer', 'dependencies': OrderedDict()}
+[0.002444] (motor_controller) JobQueued: {'identifier': 'motor_controller', 'dependencies': OrderedDict()}
+[0.003182] (vision_processing) JobQueued: {'identifier': 'vision_processing', 'dependencies': OrderedDict()}
+[0.003891] (controller) JobStarted: {'identifier': 'controller'}
+[0.072936] (image_viewer) JobStarted: {'identifier': 'image_viewer'}
+[0.101450] (-) TimerEvent: {}
+[0.129836] (motor_controller) JobStarted: {'identifier': 'motor_controller'}
+[0.181533] (vision_processing) JobStarted: {'identifier': 'vision_processing'}
+[0.201702] (-) TimerEvent: {}
+[0.303827] (-) TimerEvent: {}
+[0.404569] (-) TimerEvent: {}
+[0.505385] (-) TimerEvent: {}
+[0.606377] (-) TimerEvent: {}
+[0.707776] (-) TimerEvent: {}
+[0.808517] (-) TimerEvent: {}
+[0.910788] (-) TimerEvent: {}
+[1.011718] (-) TimerEvent: {}
+[1.115782] (-) TimerEvent: {}
+[1.223200] (-) TimerEvent: {}
+[1.339892] (-) TimerEvent: {}
+[1.440810] (-) TimerEvent: {}
+[1.541850] (-) TimerEvent: {}
+[1.643008] (-) TimerEvent: {}
+[1.744969] (-) TimerEvent: {}
+[1.845907] (-) TimerEvent: {}
+[1.946732] (-) TimerEvent: {}
+[2.048433] (-) TimerEvent: {}
+[2.150767] (-) TimerEvent: {}
+[2.251988] (-) TimerEvent: {}
+[2.352836] (-) TimerEvent: {}
+[2.454077] (-) TimerEvent: {}
+[2.555432] (-) TimerEvent: {}
+[2.656336] (-) TimerEvent: {}
+[2.757228] (-) TimerEvent: {}
+[2.858543] (-) TimerEvent: {}
+[2.960333] (-) TimerEvent: {}
+[3.061126] (-) TimerEvent: {}
+[3.162279] (-) TimerEvent: {}
+[3.267732] (-) TimerEvent: {}
+[3.368561] (-) TimerEvent: {}
+[3.469672] (-) TimerEvent: {}
+[3.573145] (-) TimerEvent: {}
+[3.675167] (-) TimerEvent: {}
+[3.779242] (-) TimerEvent: {}
+[3.880199] (-) TimerEvent: {}
+[3.981374] (-) TimerEvent: {}
+[4.085041] (-) TimerEvent: {}
+[4.186394] (-) TimerEvent: {}
+[4.288059] (-) TimerEvent: {}
+[4.389683] (-) TimerEvent: {}
+[4.491329] (-) TimerEvent: {}
+[4.595256] (-) TimerEvent: {}
+[4.696199] (-) TimerEvent: {}
+[4.799855] (-) TimerEvent: {}
+[4.901271] (-) TimerEvent: {}
+[5.010426] (-) TimerEvent: {}
+[5.118332] (-) TimerEvent: {}
+[5.223119] (-) TimerEvent: {}
+[5.324549] (-) TimerEvent: {}
+[5.438266] (-) TimerEvent: {}
+[5.539928] (-) TimerEvent: {}
+[5.641285] (-) TimerEvent: {}
+[5.744301] (-) TimerEvent: {}
+[5.845565] (-) TimerEvent: {}
+[5.949789] (-) TimerEvent: {}
+[6.050696] (-) TimerEvent: {}
+[6.152693] (-) TimerEvent: {}
+[6.254016] (-) TimerEvent: {}
+[6.355079] (-) TimerEvent: {}
+[6.455879] (-) TimerEvent: {}
+[6.556860] (-) TimerEvent: {}
+[6.660445] (-) TimerEvent: {}
+[6.761508] (-) TimerEvent: {}
+[6.863797] (-) TimerEvent: {}
+[6.964540] (-) TimerEvent: {}
+[7.065348] (-) TimerEvent: {}
+[7.166103] (-) TimerEvent: {}
+[7.266881] (-) TimerEvent: {}
+[7.368197] (-) TimerEvent: {}
+[7.468978] (-) TimerEvent: {}
+[7.569736] (-) TimerEvent: {}
+[7.670825] (-) TimerEvent: {}
+[7.775237] (-) TimerEvent: {}
+[7.876002] (-) TimerEvent: {}
+[7.977133] (-) TimerEvent: {}
+[8.079704] (-) TimerEvent: {}
+[8.182216] (-) TimerEvent: {}
+[8.283413] (-) TimerEvent: {}
+[8.387122] (-) TimerEvent: {}
+[8.488372] (-) TimerEvent: {}
+[8.590812] (-) TimerEvent: {}
+[8.692765] (-) TimerEvent: {}
+[8.796805] (-) TimerEvent: {}
+[8.897861] (-) TimerEvent: {}
+[8.999166] (-) TimerEvent: {}
+[9.100024] (-) TimerEvent: {}
+[9.202199] (-) TimerEvent: {}
+[9.308443] (-) TimerEvent: {}
+[9.411386] (-) TimerEvent: {}
+[9.522798] (-) TimerEvent: {}
+[9.625784] (-) TimerEvent: {}
+[9.726998] (-) TimerEvent: {}
+[9.829950] (-) TimerEvent: {}
+[9.931748] (-) TimerEvent: {}
+[10.034791] (-) TimerEvent: {}
+[10.138753] (-) TimerEvent: {}
+[10.239930] (-) TimerEvent: {}
+[10.340776] (-) TimerEvent: {}
+[10.443771] (-) TimerEvent: {}
+[10.544740] (-) TimerEvent: {}
+[10.646889] (-) TimerEvent: {}
+[10.749770] (-) TimerEvent: {}
+[10.850566] (-) TimerEvent: {}
+[10.952768] (-) TimerEvent: {}
+[11.053992] (-) TimerEvent: {}
+[11.157173] (-) TimerEvent: {}
+[11.259971] (-) TimerEvent: {}
+[11.364764] (-) TimerEvent: {}
+[11.467761] (-) TimerEvent: {}
+[11.572076] (-) TimerEvent: {}
+[11.673193] (-) TimerEvent: {}
+[11.776740] (-) TimerEvent: {}
+[11.881781] (-) TimerEvent: {}
+[11.986092] (-) TimerEvent: {}
+[12.090104] (-) TimerEvent: {}
+[12.193149] (-) TimerEvent: {}
+[12.295772] (-) TimerEvent: {}
+[12.404782] (-) TimerEvent: {}
+[12.507703] (-) TimerEvent: {}
+[12.615945] (-) TimerEvent: {}
+[12.722449] (-) TimerEvent: {}
+[12.824967] (-) TimerEvent: {}
+[12.934851] (-) TimerEvent: {}
+[13.047401] (-) TimerEvent: {}
+[13.158107] (-) TimerEvent: {}
+[13.271683] (-) TimerEvent: {}
+[13.379034] (-) TimerEvent: {}
+[13.483975] (-) TimerEvent: {}
+[13.591850] (-) TimerEvent: {}
+[13.693383] (-) TimerEvent: {}
+[13.801965] (-) TimerEvent: {}
+[13.906110] (-) TimerEvent: {}
+[14.014925] (-) TimerEvent: {}
+[14.115715] (-) TimerEvent: {}
+[14.221534] (-) TimerEvent: {}
+[14.339373] (-) TimerEvent: {}
+[14.440829] (-) TimerEvent: {}
+[14.501828] (image_viewer) Command: {'cmd': ['/usr/bin/python3', '-W', 'ignore:setup.py install is deprecated', '-W', 'ignore:easy_install command is deprecated', 'setup.py', 'egg_info', '--egg-base', '../build/image_viewer', 'build', '--build-base', '/home/pop/ros2_ws/src/build/image_viewer/build', 'install', '--record', '/home/pop/ros2_ws/src/build/image_viewer/install.log', '--single-version-externally-managed', 'install_data'], 'cwd': '/home/pop/ros2_ws/src/image_viewer', 'env': {'LESSOPEN': '| /usr/bin/lesspipe %s', 'USER': 'pop', 'GZ_CONFIG_PATH': '/opt/ros/jazzy/opt/sdformat_vendor/share/gz', 'XDG_SESSION_TYPE': 'wayland', 'CLUTTER_DISABLE_MIPMAPPED_TEXT': '1', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/opt/ros/jazzy/opt/sdformat_vendor/lib:/opt/ros/jazzy/opt/rviz_ogre_vendor/lib:/opt/ros/jazzy/lib/aarch64-linux-gnu:/opt/ros/jazzy/opt/gz_math_vendor/lib:/opt/ros/jazzy/opt/gz_utils_vendor/lib:/opt/ros/jazzy/opt/gz_tools_vendor/lib:/opt/ros/jazzy/opt/gz_cmake_vendor/lib:/opt/ros/jazzy/lib', 'HOME': '/home/pop', 'OLDPWD': '/home/pop/ros2_ws/src/vision_processing', 'DESKTOP_SESSION': 'ubuntu', 'ROS_PYTHON_VERSION': '3', 'GNOME_SHELL_SESSION_MODE': 'ubuntu', 'GTK_MODULES': 'gail:atk-bridge', 'SYSTEMD_EXEC_PID': '1618', 'GSM_SKIP_SSH_AGENT_WORKAROUND': 'true', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'COLORTERM': 'truecolor', 'DEBUGINFOD_URLS': 'https://debuginfod.ubuntu.com', 'IM_CONFIG_PHASE': '1', 'WAYLAND_DISPLAY': 'wayland-0', 'COLCON_PREFIX_PATH': '/home/pop/ros2_ws/src/install:/home/pop/ros2_ws/install', 'ROS_DISTRO': 'jazzy', 'LOGNAME': 'pop', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'MEMORY_PRESSURE_WATCH': '/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/session.slice/org.gnome.Shell@wayland.service/memory.pressure', 'XDG_SESSION_CLASS': 'user', 'USERNAME': 'pop', 'TERM': 'xterm-256color', 'GNOME_DESKTOP_SESSION_ID': 'this-is-deprecated', 'PATH': '/opt/ros/jazzy/opt/gz_tools_vendor/bin:/opt/ros/jazzy/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin', 'SESSION_MANAGER': 'local/pop-desktop:@/tmp/.ICE-unix/1573,unix/pop-desktop:/tmp/.ICE-unix/1573', 'XDG_MENU_PREFIX': 'gnome-', 'GNOME_TERMINAL_SCREEN': '/org/gnome/Terminal/screen/63c671c9_907c_4c55_bdd9_b60ec4046e6f', 'GNOME_SETUP_DISPLAY': ':1', 'XDG_RUNTIME_DIR': '/run/user/1000', 'DISPLAY': ':0', 'LANG': 'en_US.UTF-8', 'XDG_CURRENT_DESKTOP': 'ubuntu:GNOME', 'XMODIFIERS': '@im=ibus', 'XDG_SESSION_DESKTOP': 'ubuntu', 'XAUTHORITY': '/run/user/1000/.mutter-Xwaylandauth.FRW3E3', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.crdownload=00;90:*.dpkg-dist=00;90:*.dpkg-new=00;90:*.dpkg-old=00;90:*.dpkg-tmp=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:*.swp=00;90:*.tmp=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:', 'GNOME_TERMINAL_SERVICE': ':1.112', 'SSH_AUTH_SOCK': '/run/user/1000/keyring/ssh', 'AMENT_PREFIX_PATH': '/home/pop/ros2_ws/src/install/motor_controller:/home/pop/ros2_ws/src/install/image_viewer:/home/pop/ros2_ws/src/install/controller:/home/pop/ros2_ws/install/motor_controller:/home/pop/ros2_ws/install/image_viewer:/opt/ros/jazzy', 'SHELL': '/bin/bash', 'QT_ACCESSIBILITY': '1', 'GDMSESSION': 'ubuntu', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'ROS_AUTOMATIC_DISCOVERY_RANGE': 'SUBNET', 'QT_IM_MODULE': 'ibus', 'PWD': '/home/pop/ros2_ws/src/build/image_viewer', 'LC_ALL': 'en_US.UTF-8', 'XDG_CONFIG_DIRS': '/etc/xdg/xdg-ubuntu:/etc/xdg', 'XDG_DATA_DIRS': '/usr/share/ubuntu:/usr/share/gnome:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop', 'PYTHONPATH': '/home/pop/ros2_ws/src/build/image_viewer/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/pop/ros2_ws/src/install/image_viewer/lib/python3.12/site-packages:/home/pop/ros2_ws/src/install/motor_controller/lib/python3.12/site-packages:/home/pop/ros2_ws/src/install/image_viewer/lib/python3.12/site-packages:/home/pop/ros2_ws/src/install/controller/lib/python3.12/site-packages:/home/pop/ros2_ws/install/motor_controller/lib/python3.12/site-packages:/home/pop/ros2_ws/install/image_viewer/lib/python3.12/site-packages:/opt/ros/jazzy/lib/python3.12/site-packages', 'COLCON': '1', 'MEMORY_PRESSURE_WRITE': 'c29tZSAyMDAwMDAgMjAwMDAwMAA=', 'VTE_VERSION': '7600', 'CMAKE_PREFIX_PATH': '/opt/ros/jazzy/opt/sdformat_vendor:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_tools_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor'}, 'shell': False}
+[14.543855] (-) TimerEvent: {}
+[14.647265] (-) TimerEvent: {}
+[14.752111] (-) TimerEvent: {}
+[14.853926] (-) TimerEvent: {}
+[14.957972] (-) TimerEvent: {}
+[15.064144] (-) TimerEvent: {}
+[15.165804] (-) TimerEvent: {}
+[15.268505] (-) TimerEvent: {}
+[15.371994] (-) TimerEvent: {}
+[15.481809] (-) TimerEvent: {}
+[15.596152] (-) TimerEvent: {}
+[15.703923] (-) TimerEvent: {}
+[15.810765] (-) TimerEvent: {}
+[15.915832] (-) TimerEvent: {}
+[16.017063] (-) TimerEvent: {}
+[16.120758] (-) TimerEvent: {}
+[16.221785] (-) TimerEvent: {}
+[16.328093] (-) TimerEvent: {}
+[16.430937] (-) TimerEvent: {}
+[16.531905] (-) TimerEvent: {}
+[16.642792] (-) TimerEvent: {}
+[16.747192] (-) TimerEvent: {}
+[16.851533] (-) TimerEvent: {}
+[16.953368] (-) TimerEvent: {}
+[17.057859] (-) TimerEvent: {}
+[17.159676] (-) TimerEvent: {}
+[17.265851] (-) TimerEvent: {}
+[17.369785] (-) TimerEvent: {}
+[17.475769] (-) TimerEvent: {}
+[17.576778] (-) TimerEvent: {}
+[17.678811] (-) TimerEvent: {}
+[17.782763] (-) TimerEvent: {}
+[17.834284] (image_viewer) StdoutLine: {'line': b'running egg_info\n'}
+[17.886472] (-) TimerEvent: {}
+[17.989819] (-) TimerEvent: {}
+[18.099443] (-) TimerEvent: {}
+[18.205745] (-) TimerEvent: {}
+[18.306726] (-) TimerEvent: {}
+[18.410881] (-) TimerEvent: {}
+[18.482893] (image_viewer) StdoutLine: {'line': b'writing ../build/image_viewer/image_viewer.egg-info/PKG-INFO\n'}
+[18.499495] (image_viewer) StdoutLine: {'line': b'writing dependency_links to ../build/image_viewer/image_viewer.egg-info/dependency_links.txt\n'}
+[18.504330] (image_viewer) StdoutLine: {'line': b'writing entry points to ../build/image_viewer/image_viewer.egg-info/entry_points.txt\n'}
+[18.512694] (-) TimerEvent: {}
+[18.522637] (image_viewer) StdoutLine: {'line': b'writing requirements to ../build/image_viewer/image_viewer.egg-info/requires.txt\n'}
+[18.539997] (image_viewer) StdoutLine: {'line': b'writing top-level names to ../build/image_viewer/image_viewer.egg-info/top_level.txt\n'}
+[18.616066] (-) TimerEvent: {}
+[18.644742] (controller) Command: {'cmd': ['/usr/bin/python3', '-W', 'ignore:setup.py install is deprecated', '-W', 'ignore:easy_install command is deprecated', 'setup.py', 'egg_info', '--egg-base', '../build/controller', 'build', '--build-base', '/home/pop/ros2_ws/src/build/controller/build', 'install', '--record', '/home/pop/ros2_ws/src/build/controller/install.log', '--single-version-externally-managed', 'install_data'], 'cwd': '/home/pop/ros2_ws/src/controller', 'env': {'LESSOPEN': '| /usr/bin/lesspipe %s', 'USER': 'pop', 'GZ_CONFIG_PATH': '/opt/ros/jazzy/opt/sdformat_vendor/share/gz', 'XDG_SESSION_TYPE': 'wayland', 'CLUTTER_DISABLE_MIPMAPPED_TEXT': '1', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/opt/ros/jazzy/opt/sdformat_vendor/lib:/opt/ros/jazzy/opt/rviz_ogre_vendor/lib:/opt/ros/jazzy/lib/aarch64-linux-gnu:/opt/ros/jazzy/opt/gz_math_vendor/lib:/opt/ros/jazzy/opt/gz_utils_vendor/lib:/opt/ros/jazzy/opt/gz_tools_vendor/lib:/opt/ros/jazzy/opt/gz_cmake_vendor/lib:/opt/ros/jazzy/lib', 'HOME': '/home/pop', 'OLDPWD': '/home/pop/ros2_ws/src/vision_processing', 'DESKTOP_SESSION': 'ubuntu', 'ROS_PYTHON_VERSION': '3', 'GNOME_SHELL_SESSION_MODE': 'ubuntu', 'GTK_MODULES': 'gail:atk-bridge', 'SYSTEMD_EXEC_PID': '1618', 'GSM_SKIP_SSH_AGENT_WORKAROUND': 'true', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'COLORTERM': 'truecolor', 'DEBUGINFOD_URLS': 'https://debuginfod.ubuntu.com', 'IM_CONFIG_PHASE': '1', 'WAYLAND_DISPLAY': 'wayland-0', 'COLCON_PREFIX_PATH': '/home/pop/ros2_ws/src/install:/home/pop/ros2_ws/install', 'ROS_DISTRO': 'jazzy', 'LOGNAME': 'pop', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'MEMORY_PRESSURE_WATCH': '/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/session.slice/org.gnome.Shell@wayland.service/memory.pressure', 'XDG_SESSION_CLASS': 'user', 'USERNAME': 'pop', 'TERM': 'xterm-256color', 'GNOME_DESKTOP_SESSION_ID': 'this-is-deprecated', 'PATH': '/opt/ros/jazzy/opt/gz_tools_vendor/bin:/opt/ros/jazzy/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin', 'SESSION_MANAGER': 'local/pop-desktop:@/tmp/.ICE-unix/1573,unix/pop-desktop:/tmp/.ICE-unix/1573', 'XDG_MENU_PREFIX': 'gnome-', 'GNOME_TERMINAL_SCREEN': '/org/gnome/Terminal/screen/63c671c9_907c_4c55_bdd9_b60ec4046e6f', 'GNOME_SETUP_DISPLAY': ':1', 'XDG_RUNTIME_DIR': '/run/user/1000', 'DISPLAY': ':0', 'LANG': 'en_US.UTF-8', 'XDG_CURRENT_DESKTOP': 'ubuntu:GNOME', 'XMODIFIERS': '@im=ibus', 'XDG_SESSION_DESKTOP': 'ubuntu', 'XAUTHORITY': '/run/user/1000/.mutter-Xwaylandauth.FRW3E3', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.crdownload=00;90:*.dpkg-dist=00;90:*.dpkg-new=00;90:*.dpkg-old=00;90:*.dpkg-tmp=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:*.swp=00;90:*.tmp=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:', 'GNOME_TERMINAL_SERVICE': ':1.112', 'SSH_AUTH_SOCK': '/run/user/1000/keyring/ssh', 'AMENT_PREFIX_PATH': '/home/pop/ros2_ws/src/install/motor_controller:/home/pop/ros2_ws/src/install/image_viewer:/home/pop/ros2_ws/src/install/controller:/home/pop/ros2_ws/install/motor_controller:/home/pop/ros2_ws/install/image_viewer:/opt/ros/jazzy', 'SHELL': '/bin/bash', 'QT_ACCESSIBILITY': '1', 'GDMSESSION': 'ubuntu', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'ROS_AUTOMATIC_DISCOVERY_RANGE': 'SUBNET', 'QT_IM_MODULE': 'ibus', 'PWD': '/home/pop/ros2_ws/src/build/controller', 'LC_ALL': 'en_US.UTF-8', 'XDG_CONFIG_DIRS': '/etc/xdg/xdg-ubuntu:/etc/xdg', 'XDG_DATA_DIRS': '/usr/share/ubuntu:/usr/share/gnome:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop', 'PYTHONPATH': '/home/pop/ros2_ws/src/build/controller/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/pop/ros2_ws/src/install/controller/lib/python3.12/site-packages:/home/pop/ros2_ws/src/install/motor_controller/lib/python3.12/site-packages:/home/pop/ros2_ws/src/install/image_viewer/lib/python3.12/site-packages:/home/pop/ros2_ws/src/install/controller/lib/python3.12/site-packages:/home/pop/ros2_ws/install/motor_controller/lib/python3.12/site-packages:/home/pop/ros2_ws/install/image_viewer/lib/python3.12/site-packages:/opt/ros/jazzy/lib/python3.12/site-packages', 'COLCON': '1', 'MEMORY_PRESSURE_WRITE': 'c29tZSAyMDAwMDAgMjAwMDAwMAA=', 'VTE_VERSION': '7600', 'CMAKE_PREFIX_PATH': '/opt/ros/jazzy/opt/sdformat_vendor:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_tools_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor'}, 'shell': False}
+[18.718788] (-) TimerEvent: {}
+[18.825809] (-) TimerEvent: {}
+[18.929803] (-) TimerEvent: {}
+[19.032833] (-) TimerEvent: {}
+[19.146818] (-) TimerEvent: {}
+[19.247813] (-) TimerEvent: {}
+[19.353944] (-) TimerEvent: {}
+[19.466032] (-) TimerEvent: {}
+[19.571702] (-) TimerEvent: {}
+[19.675856] (-) TimerEvent: {}
+[19.779032] (-) TimerEvent: {}
+[19.885010] (-) TimerEvent: {}
+[19.895854] (image_viewer) StdoutLine: {'line': b"reading manifest file '../build/image_viewer/image_viewer.egg-info/SOURCES.txt'\n"}
+[19.900468] (image_viewer) StdoutLine: {'line': b"writing manifest file '../build/image_viewer/image_viewer.egg-info/SOURCES.txt'\n"}
+[19.902022] (image_viewer) StdoutLine: {'line': b'running build\n'}
+[19.902574] (image_viewer) StdoutLine: {'line': b'running build_py\n'}
+[19.920910] (image_viewer) StdoutLine: {'line': b'running install\n'}
+[19.986546] (-) TimerEvent: {}
+[19.994018] (image_viewer) StdoutLine: {'line': b'running install_lib\n'}
+[20.017045] (vision_processing) Command: {'cmd': ['/usr/bin/python3', '-W', 'ignore:setup.py install is deprecated', '-W', 'ignore:easy_install command is deprecated', 'setup.py', 'egg_info', '--egg-base', '../build/vision_processing', 'build', '--build-base', '/home/pop/ros2_ws/src/build/vision_processing/build', 'install', '--record', '/home/pop/ros2_ws/src/build/vision_processing/install.log', '--single-version-externally-managed', 'install_data'], 'cwd': '/home/pop/ros2_ws/src/vision_processing', 'env': {'LESSOPEN': '| /usr/bin/lesspipe %s', 'USER': 'pop', 'GZ_CONFIG_PATH': '/opt/ros/jazzy/opt/sdformat_vendor/share/gz', 'XDG_SESSION_TYPE': 'wayland', 'CLUTTER_DISABLE_MIPMAPPED_TEXT': '1', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/opt/ros/jazzy/opt/sdformat_vendor/lib:/opt/ros/jazzy/opt/rviz_ogre_vendor/lib:/opt/ros/jazzy/lib/aarch64-linux-gnu:/opt/ros/jazzy/opt/gz_math_vendor/lib:/opt/ros/jazzy/opt/gz_utils_vendor/lib:/opt/ros/jazzy/opt/gz_tools_vendor/lib:/opt/ros/jazzy/opt/gz_cmake_vendor/lib:/opt/ros/jazzy/lib', 'HOME': '/home/pop', 'OLDPWD': '/home/pop/ros2_ws/src/vision_processing', 'DESKTOP_SESSION': 'ubuntu', 'ROS_PYTHON_VERSION': '3', 'GNOME_SHELL_SESSION_MODE': 'ubuntu', 'GTK_MODULES': 'gail:atk-bridge', 'SYSTEMD_EXEC_PID': '1618', 'GSM_SKIP_SSH_AGENT_WORKAROUND': 'true', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'COLORTERM': 'truecolor', 'DEBUGINFOD_URLS': 'https://debuginfod.ubuntu.com', 'IM_CONFIG_PHASE': '1', 'WAYLAND_DISPLAY': 'wayland-0', 'COLCON_PREFIX_PATH': '/home/pop/ros2_ws/src/install:/home/pop/ros2_ws/install', 'ROS_DISTRO': 'jazzy', 'LOGNAME': 'pop', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'MEMORY_PRESSURE_WATCH': '/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/session.slice/org.gnome.Shell@wayland.service/memory.pressure', 'XDG_SESSION_CLASS': 'user', 'USERNAME': 'pop', 'TERM': 'xterm-256color', 'GNOME_DESKTOP_SESSION_ID': 'this-is-deprecated', 'PATH': '/opt/ros/jazzy/opt/gz_tools_vendor/bin:/opt/ros/jazzy/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin', 'SESSION_MANAGER': 'local/pop-desktop:@/tmp/.ICE-unix/1573,unix/pop-desktop:/tmp/.ICE-unix/1573', 'XDG_MENU_PREFIX': 'gnome-', 'GNOME_TERMINAL_SCREEN': '/org/gnome/Terminal/screen/63c671c9_907c_4c55_bdd9_b60ec4046e6f', 'GNOME_SETUP_DISPLAY': ':1', 'XDG_RUNTIME_DIR': '/run/user/1000', 'DISPLAY': ':0', 'LANG': 'en_US.UTF-8', 'XDG_CURRENT_DESKTOP': 'ubuntu:GNOME', 'XMODIFIERS': '@im=ibus', 'XDG_SESSION_DESKTOP': 'ubuntu', 'XAUTHORITY': '/run/user/1000/.mutter-Xwaylandauth.FRW3E3', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.crdownload=00;90:*.dpkg-dist=00;90:*.dpkg-new=00;90:*.dpkg-old=00;90:*.dpkg-tmp=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:*.swp=00;90:*.tmp=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:', 'GNOME_TERMINAL_SERVICE': ':1.112', 'SSH_AUTH_SOCK': '/run/user/1000/keyring/ssh', 'AMENT_PREFIX_PATH': '/home/pop/ros2_ws/src/install/motor_controller:/home/pop/ros2_ws/src/install/image_viewer:/home/pop/ros2_ws/src/install/controller:/home/pop/ros2_ws/install/motor_controller:/home/pop/ros2_ws/install/image_viewer:/opt/ros/jazzy', 'SHELL': '/bin/bash', 'QT_ACCESSIBILITY': '1', 'GDMSESSION': 'ubuntu', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'ROS_AUTOMATIC_DISCOVERY_RANGE': 'SUBNET', 'QT_IM_MODULE': 'ibus', 'PWD': '/home/pop/ros2_ws/src/build/vision_processing', 'LC_ALL': 'en_US.UTF-8', 'XDG_CONFIG_DIRS': '/etc/xdg/xdg-ubuntu:/etc/xdg', 'XDG_DATA_DIRS': '/usr/share/ubuntu:/usr/share/gnome:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop', 'PYTHONPATH': '/home/pop/ros2_ws/src/build/vision_processing/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/pop/ros2_ws/src/install/vision_processing/lib/python3.12/site-packages:/home/pop/ros2_ws/src/install/motor_controller/lib/python3.12/site-packages:/home/pop/ros2_ws/src/install/image_viewer/lib/python3.12/site-packages:/home/pop/ros2_ws/src/install/controller/lib/python3.12/site-packages:/home/pop/ros2_ws/install/motor_controller/lib/python3.12/site-packages:/home/pop/ros2_ws/install/image_viewer/lib/python3.12/site-packages:/opt/ros/jazzy/lib/python3.12/site-packages', 'COLCON': '1', 'MEMORY_PRESSURE_WRITE': 'c29tZSAyMDAwMDAgMjAwMDAwMAA=', 'VTE_VERSION': '7600', 'CMAKE_PREFIX_PATH': '/opt/ros/jazzy/opt/sdformat_vendor:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_tools_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor'}, 'shell': False}
+[20.087524] (-) TimerEvent: {}
+[20.188385] (-) TimerEvent: {}
+[20.292217] (-) TimerEvent: {}
+[20.396000] (-) TimerEvent: {}
+[20.501943] (-) TimerEvent: {}
+[20.602787] (-) TimerEvent: {}
+[20.708210] (-) TimerEvent: {}
+[20.717490] (image_viewer) StdoutLine: {'line': b'running install_data\n'}
+[20.728198] (image_viewer) StdoutLine: {'line': b'running install_egg_info\n'}
+[20.813261] (-) TimerEvent: {}
+[20.926207] (-) TimerEvent: {}
+[21.028199] (-) TimerEvent: {}
+[21.133135] (-) TimerEvent: {}
+[21.241778] (-) TimerEvent: {}
+[21.323939] (image_viewer) StdoutLine: {'line': b"removing '/home/pop/ros2_ws/src/install/image_viewer/lib/python3.12/site-packages/image_viewer-0.0.0-py3.12.egg-info' (and everything under it)\n"}
+[21.331712] (image_viewer) StdoutLine: {'line': b'Copying ../build/image_viewer/image_viewer.egg-info to /home/pop/ros2_ws/src/install/image_viewer/lib/python3.12/site-packages/image_viewer-0.0.0-py3.12.egg-info\n'}
+[21.342741] (-) TimerEvent: {}
+[21.389730] (image_viewer) StdoutLine: {'line': b'running install_scripts\n'}
+[21.446852] (-) TimerEvent: {}
+[21.555575] (-) TimerEvent: {}
+[21.663815] (-) TimerEvent: {}
+[21.774043] (-) TimerEvent: {}
+[21.881894] (-) TimerEvent: {}
+[21.987235] (-) TimerEvent: {}
+[22.092371] (-) TimerEvent: {}
+[22.199791] (-) TimerEvent: {}
+[22.301014] (-) TimerEvent: {}
+[22.405360] (-) TimerEvent: {}
+[22.510021] (-) TimerEvent: {}
+[22.614942] (-) TimerEvent: {}
+[22.723771] (-) TimerEvent: {}
+[22.829792] (-) TimerEvent: {}
+[22.938196] (-) TimerEvent: {}
+[23.040121] (vision_processing) StdoutLine: {'line': b'running egg_info\n'}
+[23.042590] (-) TimerEvent: {}
+[23.053863] (vision_processing) StdoutLine: {'line': b'creating ../build/vision_processing/vision_processing.egg-info\n'}
+[23.147017] (-) TimerEvent: {}
+[23.249802] (-) TimerEvent: {}
+[23.320771] (motor_controller) Command: {'cmd': ['/usr/bin/python3', '-W', 'ignore:setup.py install is deprecated', '-W', 'ignore:easy_install command is deprecated', 'setup.py', 'egg_info', '--egg-base', '../build/motor_controller', 'build', '--build-base', '/home/pop/ros2_ws/src/build/motor_controller/build', 'install', '--record', '/home/pop/ros2_ws/src/build/motor_controller/install.log', '--single-version-externally-managed', 'install_data'], 'cwd': '/home/pop/ros2_ws/src/motor_controller', 'env': {'LESSOPEN': '| /usr/bin/lesspipe %s', 'USER': 'pop', 'GZ_CONFIG_PATH': '/opt/ros/jazzy/opt/sdformat_vendor/share/gz', 'XDG_SESSION_TYPE': 'wayland', 'CLUTTER_DISABLE_MIPMAPPED_TEXT': '1', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/opt/ros/jazzy/opt/sdformat_vendor/lib:/opt/ros/jazzy/opt/rviz_ogre_vendor/lib:/opt/ros/jazzy/lib/aarch64-linux-gnu:/opt/ros/jazzy/opt/gz_math_vendor/lib:/opt/ros/jazzy/opt/gz_utils_vendor/lib:/opt/ros/jazzy/opt/gz_tools_vendor/lib:/opt/ros/jazzy/opt/gz_cmake_vendor/lib:/opt/ros/jazzy/lib', 'HOME': '/home/pop', 'OLDPWD': '/home/pop/ros2_ws/src/vision_processing', 'DESKTOP_SESSION': 'ubuntu', 'ROS_PYTHON_VERSION': '3', 'GNOME_SHELL_SESSION_MODE': 'ubuntu', 'GTK_MODULES': 'gail:atk-bridge', 'SYSTEMD_EXEC_PID': '1618', 'GSM_SKIP_SSH_AGENT_WORKAROUND': 'true', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'COLORTERM': 'truecolor', 'DEBUGINFOD_URLS': 'https://debuginfod.ubuntu.com', 'IM_CONFIG_PHASE': '1', 'WAYLAND_DISPLAY': 'wayland-0', 'COLCON_PREFIX_PATH': '/home/pop/ros2_ws/src/install:/home/pop/ros2_ws/install', 'ROS_DISTRO': 'jazzy', 'LOGNAME': 'pop', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'MEMORY_PRESSURE_WATCH': '/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/session.slice/org.gnome.Shell@wayland.service/memory.pressure', 'XDG_SESSION_CLASS': 'user', 'USERNAME': 'pop', 'TERM': 'xterm-256color', 'GNOME_DESKTOP_SESSION_ID': 'this-is-deprecated', 'PATH': '/opt/ros/jazzy/opt/gz_tools_vendor/bin:/opt/ros/jazzy/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin', 'SESSION_MANAGER': 'local/pop-desktop:@/tmp/.ICE-unix/1573,unix/pop-desktop:/tmp/.ICE-unix/1573', 'XDG_MENU_PREFIX': 'gnome-', 'GNOME_TERMINAL_SCREEN': '/org/gnome/Terminal/screen/63c671c9_907c_4c55_bdd9_b60ec4046e6f', 'GNOME_SETUP_DISPLAY': ':1', 'XDG_RUNTIME_DIR': '/run/user/1000', 'DISPLAY': ':0', 'LANG': 'en_US.UTF-8', 'XDG_CURRENT_DESKTOP': 'ubuntu:GNOME', 'XMODIFIERS': '@im=ibus', 'XDG_SESSION_DESKTOP': 'ubuntu', 'XAUTHORITY': '/run/user/1000/.mutter-Xwaylandauth.FRW3E3', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.crdownload=00;90:*.dpkg-dist=00;90:*.dpkg-new=00;90:*.dpkg-old=00;90:*.dpkg-tmp=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:*.swp=00;90:*.tmp=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:', 'GNOME_TERMINAL_SERVICE': ':1.112', 'SSH_AUTH_SOCK': '/run/user/1000/keyring/ssh', 'AMENT_PREFIX_PATH': '/home/pop/ros2_ws/src/install/motor_controller:/home/pop/ros2_ws/src/install/image_viewer:/home/pop/ros2_ws/src/install/controller:/home/pop/ros2_ws/install/motor_controller:/home/pop/ros2_ws/install/image_viewer:/opt/ros/jazzy', 'SHELL': '/bin/bash', 'QT_ACCESSIBILITY': '1', 'GDMSESSION': 'ubuntu', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'ROS_AUTOMATIC_DISCOVERY_RANGE': 'SUBNET', 'QT_IM_MODULE': 'ibus', 'PWD': '/home/pop/ros2_ws/src/build/motor_controller', 'LC_ALL': 'en_US.UTF-8', 'XDG_CONFIG_DIRS': '/etc/xdg/xdg-ubuntu:/etc/xdg', 'XDG_DATA_DIRS': '/usr/share/ubuntu:/usr/share/gnome:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop', 'PYTHONPATH': '/home/pop/ros2_ws/src/build/motor_controller/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/pop/ros2_ws/src/install/motor_controller/lib/python3.12/site-packages:/home/pop/ros2_ws/src/install/motor_controller/lib/python3.12/site-packages:/home/pop/ros2_ws/src/install/image_viewer/lib/python3.12/site-packages:/home/pop/ros2_ws/src/install/controller/lib/python3.12/site-packages:/home/pop/ros2_ws/install/motor_controller/lib/python3.12/site-packages:/home/pop/ros2_ws/install/image_viewer/lib/python3.12/site-packages:/opt/ros/jazzy/lib/python3.12/site-packages', 'COLCON': '1', 'MEMORY_PRESSURE_WRITE': 'c29tZSAyMDAwMDAgMjAwMDAwMAA=', 'VTE_VERSION': '7600', 'CMAKE_PREFIX_PATH': '/opt/ros/jazzy/opt/sdformat_vendor:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_tools_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor'}, 'shell': False}
+[23.347842] (vision_processing) StdoutLine: {'line': b'writing ../build/vision_processing/vision_processing.egg-info/PKG-INFO\n'}
+[23.356791] (-) TimerEvent: {}
+[23.360779] (vision_processing) StdoutLine: {'line': b'writing dependency_links to ../build/vision_processing/vision_processing.egg-info/dependency_links.txt\n'}
+[23.361566] (vision_processing) StdoutLine: {'line': b'writing requirements to ../build/vision_processing/vision_processing.egg-info/requires.txt\n'}
+[23.366703] (vision_processing) StdoutLine: {'line': b'writing top-level names to ../build/vision_processing/vision_processing.egg-info/top_level.txt\n'}
+[23.377220] (vision_processing) StdoutLine: {'line': b"writing manifest file '../build/vision_processing/vision_processing.egg-info/SOURCES.txt'\n"}
+[23.378011] (controller) StdoutLine: {'line': b'running egg_info\n'}
+[23.458839] (-) TimerEvent: {}
+[23.564877] (-) TimerEvent: {}
+[23.675363] (-) TimerEvent: {}
+[23.776294] (-) TimerEvent: {}
+[23.833051] (controller) StdoutLine: {'line': b'writing ../build/controller/controller.egg-info/PKG-INFO\n'}
+[23.837041] (vision_processing) StdoutLine: {'line': b"reading manifest file '../build/vision_processing/vision_processing.egg-info/SOURCES.txt'\n"}
+[23.850794] (vision_processing) StdoutLine: {'line': b"writing manifest file '../build/vision_processing/vision_processing.egg-info/SOURCES.txt'\n"}
+[23.865212] (vision_processing) StdoutLine: {'line': b'running build\n'}
+[23.865710] (vision_processing) StdoutLine: {'line': b'running build_py\n'}
+[23.872175] (vision_processing) StdoutLine: {'line': b'creating /home/pop/ros2_ws/src/build/vision_processing/build\n'}
+[23.876234] (vision_processing) StdoutLine: {'line': b'creating /home/pop/ros2_ws/src/build/vision_processing/build/lib\n'}
+[23.877019] (-) TimerEvent: {}
+[23.884987] (vision_processing) StdoutLine: {'line': b'creating /home/pop/ros2_ws/src/build/vision_processing/build/lib/vision_processing\n'}
+[23.888195] (vision_processing) StdoutLine: {'line': b'copying vision_processing/__init__.py -> /home/pop/ros2_ws/src/build/vision_processing/build/lib/vision_processing\n'}
+[23.889148] (vision_processing) StdoutLine: {'line': b'copying vision_processing/vision_processing.py -> /home/pop/ros2_ws/src/build/vision_processing/build/lib/vision_processing\n'}
+[23.898851] (vision_processing) StdoutLine: {'line': b'running install\n'}
+[23.904303] (controller) StdoutLine: {'line': b'writing dependency_links to ../build/controller/controller.egg-info/dependency_links.txt\n'}
+[23.915468] (controller) StdoutLine: {'line': b'writing requirements to ../build/controller/controller.egg-info/requires.txt\n'}
+[23.922396] (controller) StdoutLine: {'line': b'writing top-level names to ../build/controller/controller.egg-info/top_level.txt\n'}
+[23.931507] (vision_processing) StdoutLine: {'line': b'running install_lib\n'}
+[23.986962] (-) TimerEvent: {}
+[24.091822] (-) TimerEvent: {}
+[24.165334] (vision_processing) StdoutLine: {'line': b'creating /home/pop/ros2_ws/src/install/vision_processing/lib/python3.12/site-packages/vision_processing\n'}
+[24.167952] (vision_processing) StdoutLine: {'line': b'copying /home/pop/ros2_ws/src/build/vision_processing/build/lib/vision_processing/__init__.py -> /home/pop/ros2_ws/src/install/vision_processing/lib/python3.12/site-packages/vision_processing\n'}
+[24.175552] (vision_processing) StdoutLine: {'line': b'copying /home/pop/ros2_ws/src/build/vision_processing/build/lib/vision_processing/vision_processing.py -> /home/pop/ros2_ws/src/install/vision_processing/lib/python3.12/site-packages/vision_processing\n'}
+[24.176498] (vision_processing) StdoutLine: {'line': b'byte-compiling /home/pop/ros2_ws/src/install/vision_processing/lib/python3.12/site-packages/vision_processing/__init__.py to __init__.cpython-312.pyc\n'}
+[24.181491] (vision_processing) StdoutLine: {'line': b'byte-compiling /home/pop/ros2_ws/src/install/vision_processing/lib/python3.12/site-packages/vision_processing/vision_processing.py to vision_processing.cpython-312.pyc\n'}
+[24.187768] (vision_processing) StdoutLine: {'line': b'running install_data\n'}
+[24.192215] (-) TimerEvent: {}
+[24.200437] (vision_processing) StdoutLine: {'line': b'creating /home/pop/ros2_ws/src/install/vision_processing/share/ament_index\n'}
+[24.210920] (vision_processing) StdoutLine: {'line': b'creating /home/pop/ros2_ws/src/install/vision_processing/share/ament_index/resource_index\n'}
+[24.215986] (vision_processing) StdoutLine: {'line': b'creating /home/pop/ros2_ws/src/install/vision_processing/share/ament_index/resource_index/packages\n'}
+[24.217056] (vision_processing) StdoutLine: {'line': b'copying resource/vision_processing -> /home/pop/ros2_ws/src/install/vision_processing/share/ament_index/resource_index/packages\n'}
+[24.217982] (vision_processing) StdoutLine: {'line': b'copying package.xml -> /home/pop/ros2_ws/src/install/vision_processing/share/vision_processing\n'}
+[24.242461] (vision_processing) StdoutLine: {'line': b'running install_egg_info\n'}
+[24.296025] (-) TimerEvent: {}
+[24.397055] (-) TimerEvent: {}
+[24.425446] (vision_processing) StdoutLine: {'line': b'Copying ../build/vision_processing/vision_processing.egg-info to /home/pop/ros2_ws/src/install/vision_processing/lib/python3.12/site-packages/vision_processing-0.0.0-py3.12.egg-info\n'}
+[24.444251] (vision_processing) StdoutLine: {'line': b'running install_scripts\n'}
+[24.503821] (-) TimerEvent: {}
+[24.610798] (-) TimerEvent: {}
+[24.714807] (-) TimerEvent: {}
+[24.827748] (-) TimerEvent: {}
+[24.933951] (-) TimerEvent: {}
+[24.988214] (image_viewer) StdoutLine: {'line': b'Installing image_viewer script to /home/pop/ros2_ws/src/install/image_viewer/lib/image_viewer\n'}
+[24.996158] (image_viewer) StdoutLine: {'line': b"writing list of installed files to '/home/pop/ros2_ws/src/build/image_viewer/install.log'\n"}
+[25.035945] (-) TimerEvent: {}
+[25.141092] (-) TimerEvent: {}
+[25.249035] (-) TimerEvent: {}
+[25.355015] (-) TimerEvent: {}
+[25.448548] (image_viewer) CommandEnded: {'returncode': 0}
+[25.455013] (-) TimerEvent: {}
+[25.573766] (-) TimerEvent: {}
+[25.634485] (controller) StdoutLine: {'line': b"reading manifest file '../build/controller/controller.egg-info/SOURCES.txt'\n"}
+[25.646189] (controller) StdoutLine: {'line': b"writing manifest file '../build/controller/controller.egg-info/SOURCES.txt'\n"}
+[25.660860] (controller) StdoutLine: {'line': b'running build\n'}
+[25.661829] (controller) StdoutLine: {'line': b'running build_py\n'}
+[25.663490] (controller) StdoutLine: {'line': b'running install\n'}
+[25.678871] (-) TimerEvent: {}
+[25.730787] (controller) StdoutLine: {'line': b'running install_lib\n'}
+[25.742509] (image_viewer) JobEnded: {'identifier': 'image_viewer', 'rc': 0}
+[25.779384] (-) TimerEvent: {}
+[25.884828] (-) TimerEvent: {}
+[25.985924] (-) TimerEvent: {}
+[26.089970] (-) TimerEvent: {}
+[26.177918] (controller) StdoutLine: {'line': b'running install_data\n'}
+[26.182877] (controller) StdoutLine: {'line': b'running install_egg_info\n'}
+[26.190232] (-) TimerEvent: {}
+[26.248419] (vision_processing) StdoutLine: {'line': b"writing list of installed files to '/home/pop/ros2_ws/src/build/vision_processing/install.log'\n"}
+[26.302385] (-) TimerEvent: {}
+[26.407915] (-) TimerEvent: {}
+[26.510538] (-) TimerEvent: {}
+[26.533531] (vision_processing) CommandEnded: {'returncode': 0}
+[26.613159] (-) TimerEvent: {}
+[26.622452] (vision_processing) JobEnded: {'identifier': 'vision_processing', 'rc': 0}
+[26.648054] (controller) StdoutLine: {'line': b"removing '/home/pop/ros2_ws/src/install/controller/lib/python3.12/site-packages/controller-0.0.0-py3.12.egg-info' (and everything under it)\n"}
+[26.655301] (controller) StdoutLine: {'line': b'Copying ../build/controller/controller.egg-info to /home/pop/ros2_ws/src/install/controller/lib/python3.12/site-packages/controller-0.0.0-py3.12.egg-info\n'}
+[26.658532] (controller) StdoutLine: {'line': b'running install_scripts\n'}
+[26.714569] (-) TimerEvent: {}
+[26.817212] (-) TimerEvent: {}
+[26.918858] (-) TimerEvent: {}
+[27.023368] (-) TimerEvent: {}
+[27.130004] (-) TimerEvent: {}
+[27.233190] (-) TimerEvent: {}
+[27.338469] (-) TimerEvent: {}
+[27.439569] (-) TimerEvent: {}
+[27.540459] (-) TimerEvent: {}
+[27.644981] (-) TimerEvent: {}
+[27.747371] (-) TimerEvent: {}
+[27.849982] (-) TimerEvent: {}
+[27.950772] (-) TimerEvent: {}
+[28.021418] (motor_controller) StdoutLine: {'line': b'running egg_info\n'}
+[28.052511] (-) TimerEvent: {}
+[28.154904] (-) TimerEvent: {}
+[28.168348] (controller) StdoutLine: {'line': b"writing list of installed files to '/home/pop/ros2_ws/src/build/controller/install.log'\n"}
+[28.255247] (-) TimerEvent: {}
+[28.299245] (motor_controller) StdoutLine: {'line': b'writing ../build/motor_controller/motor_controller.egg-info/PKG-INFO\n'}
+[28.305435] (motor_controller) StdoutLine: {'line': b'writing dependency_links to ../build/motor_controller/motor_controller.egg-info/dependency_links.txt\n'}
+[28.311966] (motor_controller) StdoutLine: {'line': b'writing entry points to ../build/motor_controller/motor_controller.egg-info/entry_points.txt\n'}
+[28.313676] (motor_controller) StdoutLine: {'line': b'writing requirements to ../build/motor_controller/motor_controller.egg-info/requires.txt\n'}
+[28.318998] (motor_controller) StdoutLine: {'line': b'writing top-level names to ../build/motor_controller/motor_controller.egg-info/top_level.txt\n'}
+[28.357859] (-) TimerEvent: {}
+[28.442213] (controller) CommandEnded: {'returncode': 0}
+[28.460811] (-) TimerEvent: {}
+[28.533583] (controller) JobEnded: {'identifier': 'controller', 'rc': 0}
+[28.561522] (-) TimerEvent: {}
+[28.662479] (-) TimerEvent: {}
+[28.763446] (-) TimerEvent: {}
+[28.801231] (motor_controller) StdoutLine: {'line': b"reading manifest file '../build/motor_controller/motor_controller.egg-info/SOURCES.txt'\n"}
+[28.808241] (motor_controller) StdoutLine: {'line': b"writing manifest file '../build/motor_controller/motor_controller.egg-info/SOURCES.txt'\n"}
+[28.809805] (motor_controller) StdoutLine: {'line': b'running build\n'}
+[28.814667] (motor_controller) StdoutLine: {'line': b'running build_py\n'}
+[28.815365] (motor_controller) StdoutLine: {'line': b'running install\n'}
+[28.857881] (motor_controller) StdoutLine: {'line': b'running install_lib\n'}
+[28.863609] (-) TimerEvent: {}
+[28.968319] (-) TimerEvent: {}
+[29.033438] (motor_controller) StdoutLine: {'line': b'running install_data\n'}
+[29.034221] (motor_controller) StdoutLine: {'line': b'running install_egg_info\n'}
+[29.068477] (-) TimerEvent: {}
+[29.172370] (-) TimerEvent: {}
+[29.191502] (motor_controller) StdoutLine: {'line': b"removing '/home/pop/ros2_ws/src/install/motor_controller/lib/python3.12/site-packages/motor_controller-0.0.0-py3.12.egg-info' (and everything under it)\n"}
+[29.194376] (motor_controller) StdoutLine: {'line': b'Copying ../build/motor_controller/motor_controller.egg-info to /home/pop/ros2_ws/src/install/motor_controller/lib/python3.12/site-packages/motor_controller-0.0.0-py3.12.egg-info\n'}
+[29.206602] (motor_controller) StdoutLine: {'line': b'running install_scripts\n'}
+[29.272500] (-) TimerEvent: {}
+[29.373351] (-) TimerEvent: {}
+[29.474329] (-) TimerEvent: {}
+[29.575170] (-) TimerEvent: {}
+[29.679042] (-) TimerEvent: {}
+[29.779773] (-) TimerEvent: {}
+[29.880716] (-) TimerEvent: {}
+[29.984068] (-) TimerEvent: {}
+[30.084749] (-) TimerEvent: {}
+[30.185768] (-) TimerEvent: {}
+[30.287079] (-) TimerEvent: {}
+[30.320281] (motor_controller) StdoutLine: {'line': b'Installing arduino_interface_node script to /home/pop/ros2_ws/src/install/motor_controller/lib/motor_controller\n'}
+[30.322722] (motor_controller) StdoutLine: {'line': b"writing list of installed files to '/home/pop/ros2_ws/src/build/motor_controller/install.log'\n"}
+[30.387405] (-) TimerEvent: {}
+[30.488583] (-) TimerEvent: {}
+[30.590761] (-) TimerEvent: {}
+[30.595408] (motor_controller) CommandEnded: {'returncode': 0}
+[30.643835] (motor_controller) JobEnded: {'identifier': 'motor_controller', 'rc': 0}
+[30.650420] (-) EventReactorShutdown: {}

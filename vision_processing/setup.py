@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-package_name = 'controller'
+package_name = 'vision_processing'
 
 setup(
     name=package_name,
@@ -24,7 +24,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
-		'controller = controller.controller:main',
+		'vision_processing = vision_processing.vision_processing:main',
         ],
     },
 )
