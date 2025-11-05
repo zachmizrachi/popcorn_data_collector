@@ -25,6 +25,12 @@ class VisionProcessing(Node):
         # Publisher for kernel detection state
         self.state_publisher = self.create_publisher(String, '/kernel_state', 10)
 
+        # Store initial reference frame for pixel difference
+        self.reference_frame = None
+
+        # Track current state
+        self.current_state = 'wait_for_kernel'
+
         self.get_logger().info("👁️ VisionProcessing node started")
 
     def image_callback(self, msg: Image):
@@ -33,34 +39,40 @@ class VisionProcessing(Node):
             # Convert ROS Image to OpenCV
             cv_image = self.bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
 
-            # Run kernel detection
-            kernel_present = self.detect_kernel(cv_image)
+            # Run kernel detection based on state
+            if self.current_state == 'wait_for_kernel':
+                if self.reference_frame is None:
+                    # Store first frame as reference
+                    self.reference_frame = cv2.cvtColor(cv_image, cv2.COLOR_BGR2GRAY)
+                    self.get_logger().info("📌 Reference frame captured for pixel difference")
+                else:
+                    # Compute pixel difference from reference
+                    diff = self.pixel_difference(self.reference_frame, cv_image)
+                    self.get_logger().info(f"Pixel difference: {diff}")
+                    if diff > 5000:  # threshold for kernel detection
+                        self.current_state = 'kernel_detected'
+
+            elif self.current_state == 'kernel_detected':
+                # Do something if needed; for now, just publish state
+                pass
 
             # Publish the state
             state_msg = String()
-            state_msg.data = 'kernel_detected' if kernel_present else 'wait_for_kernel'
+            state_msg.data = self.current_state
             self.state_publisher.publish(state_msg)
             self.get_logger().debug(f"Published kernel state: {state_msg.data}")
 
         except CvBridgeError as e:
             self.get_logger().error(f"CV Bridge Error: {e}")
 
-    def detect_kernel(self, frame: np.ndarray) -> bool:
-        """
-        Simple placeholder for kernel detection.
-        Replace this with your actual kernel counting or detection logic.
-        """
-
-        # Example: Convert to grayscale and threshold
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        _, thresh = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)
-
-        # Count white pixels
-        white_pixels = cv2.countNonZero(thresh)
-
-        # If we detect enough white pixels, assume a kernel is present
-        kernel_present = white_pixels > 500  # adjust threshold based on your lighting/setup
-        return kernel_present
+    def pixel_difference(self, reference_gray: np.ndarray, current_frame: np.ndarray) -> float:
+        """Compute pixel difference between reference and current frame."""
+        current_gray = cv2.cvtColor(current_frame, cv2.COLOR_BGR2GRAY)
+        # Compute absolute difference
+        diff = cv2.absdiff(reference_gray, current_gray)
+        # Sum all pixel differences
+        diff_sum = np.sum(diff)
+        return diff_sum
 
 
 def main(args=None):
@@ -78,5 +90,3 @@ def main(args=None):
 
 if __name__ == '__main__':
     main()
-
-

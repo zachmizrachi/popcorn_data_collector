@@ -22,6 +22,9 @@ class Controller(Node):
         # --- Timer loop (runs at 2Hz) ---
         self.timer = self.create_timer(0.5, self.state_loop)
 
+        self.send_arduino_command('3')  # initialize recieve stepper
+
+
         self.get_logger().info("🧭 Controller node started (2-state mode)")
 
     # ============== Main Loop ==============
