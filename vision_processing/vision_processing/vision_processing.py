@@ -1,16 +1,21 @@
+#!/usr/bin/env python3
+import rclpy
+from rclpy.node import Node
 from sensor_msgs.msg import Image
 from std_msgs.msg import String
 from cv_bridge import CvBridge, CvBridgeError
 import cv2
 import numpy as np
 
+
 class VisionProcessing(Node):
     def __init__(self):
         super().__init__('vision_processing')
 
+        # CV bridge
         self.bridge = CvBridge()
 
-        # Subscribe to raw camera input
+        # Subscribers
         self.subscription = self.create_subscription(
             Image,
             '/image_raw',
@@ -18,57 +23,76 @@ class VisionProcessing(Node):
             10
         )
 
-        # Publisher for kernel detection state
+        # Publishers
         self.state_publisher = self.create_publisher(String, '/kernel_state', 10)
+        self.debug_image_pub = self.create_publisher(Image, '/receive_kernel_debug', 10)
 
-        # Publisher for debug image
-        self.debug_image_publisher = self.create_publisher(Image, '/receive_kernel_debug', 10)
+        # Parameters for processing
+        self.center_circle_radius = 100  # pixels, adjust for your setup
+        self.blur_ksize = (5, 5)
+        self.brightness_factor = 1.0  # 1.0 = no change, >1 = brighter, <1 = darker
 
+        # Reference frame for pixel difference
+        self.ref_frame = None
         self.get_logger().info("👁️ VisionProcessing node started")
 
-        # Parameters for masking / processing
-        self.circle_radius = 100  # pixels, adjustable
-        self.blur_kernel = (7, 7)
-        self.brightness_factor = 1.2
-
     def image_callback(self, msg: Image):
-        """Process incoming images with circular mask, blur, brightness, and publish debug image."""
         try:
             # Convert ROS Image to OpenCV
             cv_image = self.bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
-
-            # --- Circular mask ---
             height, width = cv_image.shape[:2]
-            center_x, center_y = width // 2, height // 2
 
+            # Create circular mask
             mask = np.zeros((height, width), dtype=np.uint8)
-            cv2.circle(mask, (center_x, center_y), self.circle_radius, 255, -1)
+            cv2.circle(mask, (width // 2, height // 2), self.center_circle_radius, 255, -1)
             masked_image = cv2.bitwise_and(cv_image, cv_image, mask=mask)
 
-            # --- Blurring / smoothing ---
-            blurred_image = cv2.GaussianBlur(masked_image, self.blur_kernel, 0)
+            # Apply blur
+            blurred = cv2.GaussianBlur(masked_image, self.blur_ksize, 0)
 
-            # --- Brightness adjustment ---
-            processed_image = cv2.convertScaleAbs(blurred_image, alpha=self.brightness_factor, beta=0)
+            # Adjust brightness
+            bright = cv2.convertScaleAbs(blurred, alpha=self.brightness_factor, beta=0)
 
-            # --- Publish debug image ---
-            debug_msg = self.bridge.cv2_to_imgmsg(processed_image, encoding='bgr8')
-            self.debug_image_publisher.publish(debug_msg)
+            # Set reference frame if None
+            if self.ref_frame is None:
+                self.ref_frame = cv2.cvtColor(bright, cv2.COLOR_BGR2GRAY)
+                self.get_logger().info("Reference frame set for pixel difference")
+                state_msg = String()
+                state_msg.data = 'wait_for_kernel'
+                self.state_publisher.publish(state_msg)
+                return
 
-            # --- Optional: continue with kernel detection ---
-            kernel_present = self.detect_kernel(processed_image)
+            # Compute pixel difference
+            gray = cv2.cvtColor(bright, cv2.COLOR_BGR2GRAY)
+            diff = cv2.absdiff(gray, self.ref_frame)
+            diff_value = np.sum(diff)
+            self.get_logger().info(f"Pixel difference: {diff_value}")
+
+            # Simple threshold to decide kernel presence
+            kernel_present = diff_value > 50000  # adjust based on your lighting/setup
             state_msg = String()
             state_msg.data = 'kernel_detected' if kernel_present else 'wait_for_kernel'
             self.state_publisher.publish(state_msg)
-            self.get_logger().debug(f"Published kernel state: {state_msg.data}")
+
+            # Publish debug image
+            debug_msg = self.bridge.cv2_to_imgmsg(bright, encoding='bgr8')
+            self.debug_image_pub.publish(debug_msg)
 
         except CvBridgeError as e:
             self.get_logger().error(f"CV Bridge Error: {e}")
 
-    def detect_kernel(self, frame: np.ndarray) -> bool:
-        """Simple placeholder for kernel detection; replace with your actual logic."""
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        _, thresh = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)
-        white_pixels = cv2.countNonZero(thresh)
-        kernel_present = white_pixels > 500
-        return kernel_present
+
+def main(args=None):
+    rclpy.init(args=args)
+    node = VisionProcessing()
+    try:
+        rclpy.spin(node)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        node.destroy_node()
+        rclpy.shutdown()
+
+
+if __name__ == '__main__':
+    main()
