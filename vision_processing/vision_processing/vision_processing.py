@@ -27,14 +27,14 @@ class VisionProcessing(Node):
         self.state_publisher = self.create_publisher(String, '/kernel_state', 10)
         self.debug_image_pub = self.create_publisher(Image, '/receive_kernel_debug', 10)
 
-        # Parameters for processing
-        self.center_circle_radius = 100  # pixels, adjust for your setup
-        self.blur_ksize = (5, 5)
-        self.brightness_factor = 1.0  # 1.0 = no change, >1 = brighter, <1 = darker
+        # Parameters
+        self.center_circle_radius = 100   # circle radius in pixels
+        self.blur_ksize = (5, 5)          # Gaussian blur kernel size
+        self.brightness_factor = 1.2      # Brightness control factor
 
-        # Reference frame for pixel difference
+        # For pixel difference
         self.ref_frame = None
-        self.get_logger().info("👁️ VisionProcessing node started")
+        self.get_logger().info("👁️ VisionProcessing node started with yellow filter enabled")
 
     def image_callback(self, msg: Image):
         try:
@@ -42,39 +42,48 @@ class VisionProcessing(Node):
             cv_image = self.bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
             height, width = cv_image.shape[:2]
 
-            # Create circular mask
+            # === Step 1: Create circular mask ===
             mask = np.zeros((height, width), dtype=np.uint8)
             cv2.circle(mask, (width // 2, height // 2), self.center_circle_radius, 255, -1)
             masked_image = cv2.bitwise_and(cv_image, cv_image, mask=mask)
 
-            # Apply blur
-            blurred = cv2.GaussianBlur(masked_image, self.blur_ksize, 0)
+            # === Step 2: Convert to HSV for color filtering ===
+            hsv = cv2.cvtColor(masked_image, cv2.COLOR_BGR2HSV)
 
-            # Adjust brightness
+            # Define yellow color range in HSV
+            lower_yellow = np.array([20, 100, 100])  # lower bound (H, S, V)
+            upper_yellow = np.array([35, 255, 255])  # upper bound (H, S, V)
+            yellow_mask = cv2.inRange(hsv, lower_yellow, upper_yellow)
+
+            # Apply yellow mask to image
+            yellow_filtered = cv2.bitwise_and(masked_image, masked_image, mask=yellow_mask)
+
+            # === Step 3: Apply blur and brightness ===
+            blurred = cv2.GaussianBlur(yellow_filtered, self.blur_ksize, 0)
             bright = cv2.convertScaleAbs(blurred, alpha=self.brightness_factor, beta=0)
 
-            # Set reference frame if None
+            # === Step 4: Set reference frame if none exists ===
             if self.ref_frame is None:
                 self.ref_frame = cv2.cvtColor(bright, cv2.COLOR_BGR2GRAY)
-                self.get_logger().info("Reference frame set for pixel difference")
+                self.get_logger().info("Reference frame set (yellow-filtered masked region)")
                 state_msg = String()
                 state_msg.data = 'wait_for_kernel'
                 self.state_publisher.publish(state_msg)
                 return
 
-            # Compute pixel difference
+            # === Step 5: Pixel difference ===
             gray = cv2.cvtColor(bright, cv2.COLOR_BGR2GRAY)
             diff = cv2.absdiff(gray, self.ref_frame)
             diff_value = np.sum(diff)
             self.get_logger().info(f"Pixel difference: {diff_value}")
 
-            # Simple threshold to decide kernel presence
-            kernel_present = diff_value > 50000  # adjust based on your lighting/setup
+            # === Step 6: Simple threshold-based kernel presence ===
+            kernel_present = diff_value > 50000  # adjust threshold
             state_msg = String()
             state_msg.data = 'kernel_detected' if kernel_present else 'wait_for_kernel'
             self.state_publisher.publish(state_msg)
 
-            # Publish debug image
+            # === Step 7: Publish debug view ===
             debug_msg = self.bridge.cv2_to_imgmsg(bright, encoding='bgr8')
             self.debug_image_pub.publish(debug_msg)
 
