@@ -41,7 +41,10 @@ def main(args=None):
     rclpy.init(args=args)
 
     # List of topics to choose from
-    available_topics = ['/image_raw', '/receive_kernel_debug', '/camera/color/image_raw']
+    available_topics = ['/image_raw',
+                         '/receive_kernel_debug', 
+                         '/camera/color/image_raw']
+    
     print("Select image topic to view:")
     for i, t in enumerate(available_topics):
         print(f"{i + 1}: {t}")
