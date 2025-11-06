@@ -1,0 +1,201 @@
+[0.000000] (-) TimerEvent: {}
+[0.000916] (-) JobUnselected: {'identifier': 'controller'}
+[0.001201] (-) JobUnselected: {'identifier': 'image_viewer'}
+[0.001353] (-) JobUnselected: {'identifier': 'motor_controller'}
+[0.001596] (vision_processing) JobQueued: {'identifier': 'vision_processing', 'dependencies': OrderedDict()}
+[0.006393] (vision_processing) JobStarted: {'identifier': 'vision_processing'}
+[0.096159] (-) TimerEvent: {}
+[0.200081] (-) TimerEvent: {}
+[0.325097] (-) TimerEvent: {}
+[0.428738] (-) TimerEvent: {}
+[0.538409] (-) TimerEvent: {}
+[0.644194] (-) TimerEvent: {}
+[0.746893] (-) TimerEvent: {}
+[0.851844] (-) TimerEvent: {}
+[0.953035] (-) TimerEvent: {}
+[1.055842] (-) TimerEvent: {}
+[1.166707] (-) TimerEvent: {}
+[1.269002] (-) TimerEvent: {}
+[1.377807] (-) TimerEvent: {}
+[1.478510] (-) TimerEvent: {}
+[1.587821] (-) TimerEvent: {}
+[1.690859] (-) TimerEvent: {}
+[1.792803] (-) TimerEvent: {}
+[1.894900] (-) TimerEvent: {}
+[1.999305] (-) TimerEvent: {}
+[2.109345] (-) TimerEvent: {}
+[2.219741] (-) TimerEvent: {}
+[2.321011] (-) TimerEvent: {}
+[2.423230] (-) TimerEvent: {}
+[2.527804] (-) TimerEvent: {}
+[2.631858] (-) TimerEvent: {}
+[2.741120] (-) TimerEvent: {}
+[2.842957] (-) TimerEvent: {}
+[2.950920] (-) TimerEvent: {}
+[3.054891] (-) TimerEvent: {}
+[3.162883] (-) TimerEvent: {}
+[3.272691] (-) TimerEvent: {}
+[3.382769] (-) TimerEvent: {}
+[3.483571] (-) TimerEvent: {}
+[3.584514] (-) TimerEvent: {}
+[3.695386] (-) TimerEvent: {}
+[3.796293] (-) TimerEvent: {}
+[3.902874] (-) TimerEvent: {}
+[4.005932] (-) TimerEvent: {}
+[4.117200] (-) TimerEvent: {}
+[4.220120] (-) TimerEvent: {}
+[4.323554] (-) TimerEvent: {}
+[4.433457] (-) TimerEvent: {}
+[4.534304] (-) TimerEvent: {}
+[4.636932] (-) TimerEvent: {}
+[4.740898] (-) TimerEvent: {}
+[4.841808] (-) TimerEvent: {}
+[4.949009] (-) TimerEvent: {}
+[5.056892] (-) TimerEvent: {}
+[5.160854] (-) TimerEvent: {}
+[5.262826] (-) TimerEvent: {}
+[5.363798] (-) TimerEvent: {}
+[5.465581] (-) TimerEvent: {}
+[5.569991] (-) TimerEvent: {}
+[5.675024] (-) TimerEvent: {}
+[5.780944] (-) TimerEvent: {}
+[5.882703] (-) TimerEvent: {}
+[5.984873] (-) TimerEvent: {}
+[6.088960] (-) TimerEvent: {}
+[6.190712] (-) TimerEvent: {}
+[6.293527] (-) TimerEvent: {}
+[6.398173] (-) TimerEvent: {}
+[6.499201] (-) TimerEvent: {}
+[6.601207] (-) TimerEvent: {}
+[6.714090] (-) TimerEvent: {}
+[6.815929] (-) TimerEvent: {}
+[6.919829] (-) TimerEvent: {}
+[7.020713] (-) TimerEvent: {}
+[7.121633] (-) TimerEvent: {}
+[7.224155] (-) TimerEvent: {}
+[7.328041] (-) TimerEvent: {}
+[7.437581] (-) TimerEvent: {}
+[7.541706] (-) TimerEvent: {}
+[7.644022] (-) TimerEvent: {}
+[7.744940] (-) TimerEvent: {}
+[7.848473] (-) TimerEvent: {}
+[7.951944] (-) TimerEvent: {}
+[8.054402] (-) TimerEvent: {}
+[8.156716] (-) TimerEvent: {}
+[8.257517] (-) TimerEvent: {}
+[8.358394] (-) TimerEvent: {}
+[8.459591] (-) TimerEvent: {}
+[8.561382] (-) TimerEvent: {}
+[8.664270] (-) TimerEvent: {}
+[8.766053] (-) TimerEvent: {}
+[8.866839] (-) TimerEvent: {}
+[8.967700] (-) TimerEvent: {}
+[9.070916] (-) TimerEvent: {}
+[9.174106] (-) TimerEvent: {}
+[9.275775] (-) TimerEvent: {}
+[9.378784] (-) TimerEvent: {}
+[9.485044] (-) TimerEvent: {}
+[9.590417] (-) TimerEvent: {}
+[9.693875] (-) TimerEvent: {}
+[9.797314] (-) TimerEvent: {}
+[9.899805] (-) TimerEvent: {}
+[10.002178] (-) TimerEvent: {}
+[10.107888] (-) TimerEvent: {}
+[10.209157] (-) TimerEvent: {}
+[10.311181] (-) TimerEvent: {}
+[10.420431] (-) TimerEvent: {}
+[10.506864] (vision_processing) Command: {'cmd': ['/usr/bin/python3', '-W', 'ignore:setup.py install is deprecated', '-W', 'ignore:easy_install command is deprecated', 'setup.py', 'egg_info', '--egg-base', '../build/vision_processing', 'build', '--build-base', '/home/pop/ros2_ws/src/build/vision_processing/build', 'install', '--record', '/home/pop/ros2_ws/src/build/vision_processing/install.log', '--single-version-externally-managed', 'install_data'], 'cwd': '/home/pop/ros2_ws/src/vision_processing', 'env': {'LESSOPEN': '| /usr/bin/lesspipe %s', 'USER': 'pop', 'SSH_CLIENT': '10.0.0.187 51377 22', 'GZ_CONFIG_PATH': '/opt/ros/jazzy/opt/sdformat_vendor/share/gz', 'XDG_SESSION_TYPE': 'tty', 'GIT_ASKPASS': '/home/pop/.vscode-server/bin/695af097c7bd098fbf017ce3ac85e09bbc5dda06/extensions/git/dist/askpass.sh', 'SHLVL': '2', 'LD_LIBRARY_PATH': '/opt/ros/jazzy/opt/sdformat_vendor/lib:/opt/ros/jazzy/opt/rviz_ogre_vendor/lib:/opt/ros/jazzy/lib/aarch64-linux-gnu:/opt/ros/jazzy/opt/gz_math_vendor/lib:/opt/ros/jazzy/opt/gz_utils_vendor/lib:/opt/ros/jazzy/opt/gz_tools_vendor/lib:/opt/ros/jazzy/opt/gz_cmake_vendor/lib:/opt/ros/jazzy/lib', 'BROWSER': '/home/pop/.vscode-server/bin/695af097c7bd098fbf017ce3ac85e09bbc5dda06/bin/helpers/browser.sh', 'HOME': '/home/pop', 'TERM_PROGRAM_VERSION': '1.79.2', 'VSCODE_IPC_HOOK_CLI': '/run/user/1000/vscode-ipc-4e585b55-9627-43f0-aaf5-cf3c11d8631f.sock', 'ROS_PYTHON_VERSION': '3', 'VSCODE_GIT_ASKPASS_MAIN': '/home/pop/.vscode-server/bin/695af097c7bd098fbf017ce3ac85e09bbc5dda06/extensions/git/dist/askpass-main.js', 'VSCODE_GIT_ASKPASS_NODE': '/home/pop/.vscode-server/bin/695af097c7bd098fbf017ce3ac85e09bbc5dda06/node', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'COLORTERM': 'truecolor', 'DEBUGINFOD_URLS': 'https://debuginfod.ubuntu.com', 'COLCON_PREFIX_PATH': '/home/pop/ros2_ws/src/install:/home/pop/ros2_ws/install', 'ROS_DISTRO': 'jazzy', 'LOGNAME': 'pop', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'XDG_SESSION_CLASS': 'user', 'TERM': 'xterm-256color', 'XDG_SESSION_ID': '139', 'PATH': '/home/pop/.vscode-server/bin/695af097c7bd098fbf017ce3ac85e09bbc5dda06/bin/remote-cli:/opt/ros/jazzy/opt/gz_tools_vendor/bin:/opt/ros/jazzy/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin', 'XDG_RUNTIME_DIR': '/run/user/1000', 'LANG': 'en_US.UTF-8', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.crdownload=00;90:*.dpkg-dist=00;90:*.dpkg-new=00;90:*.dpkg-old=00;90:*.dpkg-tmp=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:*.swp=00;90:*.tmp=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:', 'VSCODE_GIT_IPC_HANDLE': '/run/user/1000/vscode-git-d94f8c320b.sock', 'TERM_PROGRAM': 'vscode', 'AMENT_PREFIX_PATH': '/home/pop/ros2_ws/src/install/vision_processing:/home/pop/ros2_ws/src/install/motor_controller:/home/pop/ros2_ws/src/install/image_viewer:/home/pop/ros2_ws/src/install/controller:/home/pop/ros2_ws/install/vision_processing:/home/pop/ros2_ws/install/motor_controller:/home/pop/ros2_ws/install/image_viewer:/home/pop/ros2_ws/install/controller:/opt/ros/jazzy', 'SHELL': '/bin/bash', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'ROS_AUTOMATIC_DISCOVERY_RANGE': 'SUBNET', 'VSCODE_GIT_ASKPASS_EXTRA_ARGS': '', 'PWD': '/home/pop/ros2_ws/src/build/vision_processing', 'LC_ALL': 'en_US.UTF-8', 'SSH_CONNECTION': '10.0.0.187 51377 10.0.0.138 22', 'XDG_DATA_DIRS': '/usr/share/gnome:/usr/local/share:/usr/share:/var/lib/snapd/desktop', 'PYTHONPATH': '/home/pop/ros2_ws/src/build/vision_processing/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/pop/ros2_ws/src/install/vision_processing/lib/python3.12/site-packages:/home/pop/ros2_ws/src/install/vision_processing/lib/python3.12/site-packages:/home/pop/ros2_ws/src/install/motor_controller/lib/python3.12/site-packages:/home/pop/ros2_ws/src/install/image_viewer/lib/python3.12/site-packages:/home/pop/ros2_ws/src/install/controller/lib/python3.12/site-packages:/home/pop/ros2_ws/install/vision_processing/lib/python3.12/site-packages:/home/pop/ros2_ws/install/motor_controller/lib/python3.12/site-packages:/home/pop/ros2_ws/install/image_viewer/lib/python3.12/site-packages:/home/pop/ros2_ws/install/controller/lib/python3.12/site-packages:/opt/ros/jazzy/lib/python3.12/site-packages', 'COLCON': '1', 'CMAKE_PREFIX_PATH': '/opt/ros/jazzy/opt/sdformat_vendor:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_tools_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor'}, 'shell': False}
+[10.536085] (-) TimerEvent: {}
+[10.645551] (-) TimerEvent: {}
+[10.750839] (-) TimerEvent: {}
+[10.851736] (-) TimerEvent: {}
+[10.952762] (-) TimerEvent: {}
+[11.053731] (-) TimerEvent: {}
+[11.160639] (-) TimerEvent: {}
+[11.265318] (-) TimerEvent: {}
+[11.366931] (-) TimerEvent: {}
+[11.467818] (-) TimerEvent: {}
+[11.571079] (-) TimerEvent: {}
+[11.678528] (-) TimerEvent: {}
+[11.779552] (-) TimerEvent: {}
+[11.887268] (-) TimerEvent: {}
+[11.988890] (-) TimerEvent: {}
+[12.089769] (-) TimerEvent: {}
+[12.193932] (-) TimerEvent: {}
+[12.296872] (-) TimerEvent: {}
+[12.398089] (-) TimerEvent: {}
+[12.501421] (-) TimerEvent: {}
+[12.605242] (-) TimerEvent: {}
+[12.706528] (-) TimerEvent: {}
+[12.807363] (-) TimerEvent: {}
+[12.909832] (-) TimerEvent: {}
+[13.010841] (-) TimerEvent: {}
+[13.111886] (-) TimerEvent: {}
+[13.216811] (-) TimerEvent: {}
+[13.318113] (-) TimerEvent: {}
+[13.419108] (-) TimerEvent: {}
+[13.523001] (-) TimerEvent: {}
+[13.625933] (-) TimerEvent: {}
+[13.727593] (-) TimerEvent: {}
+[13.830709] (-) TimerEvent: {}
+[13.868446] (vision_processing) StdoutLine: {'line': b'running egg_info\n'}
+[13.934819] (-) TimerEvent: {}
+[14.035694] (-) TimerEvent: {}
+[14.137379] (-) TimerEvent: {}
+[14.148844] (vision_processing) StdoutLine: {'line': b'writing ../build/vision_processing/vision_processing.egg-info/PKG-INFO\n'}
+[14.153737] (vision_processing) StdoutLine: {'line': b'writing dependency_links to ../build/vision_processing/vision_processing.egg-info/dependency_links.txt\n'}
+[14.156641] (vision_processing) StdoutLine: {'line': b'writing entry points to ../build/vision_processing/vision_processing.egg-info/entry_points.txt\n'}
+[14.157536] (vision_processing) StdoutLine: {'line': b'writing requirements to ../build/vision_processing/vision_processing.egg-info/requires.txt\n'}
+[14.165471] (vision_processing) StdoutLine: {'line': b'writing top-level names to ../build/vision_processing/vision_processing.egg-info/top_level.txt\n'}
+[14.241288] (-) TimerEvent: {}
+[14.343113] (-) TimerEvent: {}
+[14.451055] (-) TimerEvent: {}
+[14.551842] (-) TimerEvent: {}
+[14.652906] (-) TimerEvent: {}
+[14.734088] (vision_processing) StdoutLine: {'line': b"reading manifest file '../build/vision_processing/vision_processing.egg-info/SOURCES.txt'\n"}
+[14.738118] (vision_processing) StdoutLine: {'line': b"writing manifest file '../build/vision_processing/vision_processing.egg-info/SOURCES.txt'\n"}
+[14.740778] (vision_processing) StdoutLine: {'line': b'running build\n'}
+[14.742810] (vision_processing) StdoutLine: {'line': b'running build_py\n'}
+[14.743369] (vision_processing) StdoutLine: {'line': b'running install\n'}
+[14.753167] (-) TimerEvent: {}
+[14.788367] (vision_processing) StdoutLine: {'line': b'running install_lib\n'}
+[14.855139] (-) TimerEvent: {}
+[14.959444] (-) TimerEvent: {}
+[15.064151] (-) TimerEvent: {}
+[15.079136] (vision_processing) StdoutLine: {'line': b'byte-compiling /home/pop/ros2_ws/src/install/vision_processing/lib/python3.12/site-packages/vision_processing/vision_processing.py to vision_processing.cpython-312.pyc\n'}
+[15.091696] (vision_processing) StdoutLine: {'line': b'running install_data\n'}
+[15.094342] (vision_processing) StdoutLine: {'line': b'running install_egg_info\n'}
+[15.165272] (-) TimerEvent: {}
+[15.267430] (-) TimerEvent: {}
+[15.369439] (-) TimerEvent: {}
+[15.395206] (vision_processing) StdoutLine: {'line': b"removing '/home/pop/ros2_ws/src/install/vision_processing/lib/python3.12/site-packages/vision_processing-0.0.0-py3.12.egg-info' (and everything under it)\n"}
+[15.412116] (vision_processing) StdoutLine: {'line': b'Copying ../build/vision_processing/vision_processing.egg-info to /home/pop/ros2_ws/src/install/vision_processing/lib/python3.12/site-packages/vision_processing-0.0.0-py3.12.egg-info\n'}
+[15.413907] (vision_processing) StdoutLine: {'line': b'running install_scripts\n'}
+[15.474754] (-) TimerEvent: {}
+[15.575703] (-) TimerEvent: {}
+[15.681404] (-) TimerEvent: {}
+[15.784795] (-) TimerEvent: {}
+[15.888793] (-) TimerEvent: {}
+[15.991834] (-) TimerEvent: {}
+[16.097452] (-) TimerEvent: {}
+[16.198516] (-) TimerEvent: {}
+[16.299384] (-) TimerEvent: {}
+[16.402162] (-) TimerEvent: {}
+[16.504435] (-) TimerEvent: {}
+[16.606982] (-) TimerEvent: {}
+[16.708264] (-) TimerEvent: {}
+[16.811783] (-) TimerEvent: {}
+[16.912643] (-) TimerEvent: {}
+[17.014031] (-) TimerEvent: {}
+[17.116844] (-) TimerEvent: {}
+[17.218127] (-) TimerEvent: {}
+[17.329946] (-) TimerEvent: {}
+[17.338402] (vision_processing) StdoutLine: {'line': b'Installing vision_processing script to /home/pop/ros2_ws/src/install/vision_processing/lib/vision_processing\n'}
+[17.344883] (vision_processing) StdoutLine: {'line': b"writing list of installed files to '/home/pop/ros2_ws/src/build/vision_processing/install.log'\n"}
+[17.430199] (-) TimerEvent: {}
+[17.535913] (-) TimerEvent: {}
+[17.637193] (-) TimerEvent: {}
+[17.650381] (vision_processing) CommandEnded: {'returncode': 0}
+[17.739250] (-) TimerEvent: {}
+[17.754361] (vision_processing) JobEnded: {'identifier': 'vision_processing', 'rc': 0}
+[17.759563] (-) EventReactorShutdown: {}
