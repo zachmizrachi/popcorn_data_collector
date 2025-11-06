@@ -86,6 +86,7 @@ class VisionProcessing(Node):
 
             elif self.state == "wait_for_kernel":
                 # Calculate percent change relative to average baseline
+                percent_change = 0
                 if self.avg_diff and self.avg_diff > 0:
                     percent_change = ((diff_value - self.avg_diff) / self.avg_diff) * 100.0
                     self.get_logger().info(f"Percent change: {percent_change:.2f}%")
@@ -95,7 +96,7 @@ class VisionProcessing(Node):
                 # Decide kernel presence based on % increase
                 kernel_present = percent_change > 100.0  # adjust sensitivity threshold
                 if kernel_present:
-                    self.state = "kernel_detected"
+                    self.state = "wait_for_kernel"
                     self.publish_state("kernel_detected")
                     self.get_logger().info("🌽 Kernel detected!")
                 else:
@@ -104,6 +105,7 @@ class VisionProcessing(Node):
             elif self.state == "kernel_detected":
                 # You can choose to reset after detection if needed
                 pass
+
 
             # === Step 5: Publish debug image ===
             debug_msg = self.bridge.cv2_to_imgmsg(bright, encoding='bgr8')

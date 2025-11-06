@@ -1,0 +1,27 @@
+[12.956s] Invoking command in '/home/pop/ros2_ws/src/build/controller': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/pop/ros2_ws/src/build/controller/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/pop/ros2_ws/src/install/controller/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --uninstall --editable --build-directory /home/pop/ros2_ws/src/build/controller/build
+[17.154s] running develop
+[20.468s] Removing /home/pop/ros2_ws/src/install/controller/lib/python3.12/site-packages/controller.egg-link (link to .)
+[20.816s] Invoked command in '/home/pop/ros2_ws/src/build/controller' returned '0': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/pop/ros2_ws/src/build/controller/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/pop/ros2_ws/src/install/controller/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --uninstall --editable --build-directory /home/pop/ros2_ws/src/build/controller/build
+[20.826s] Invoking command in '/home/pop/ros2_ws/src/controller': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/pop/ros2_ws/src/build/controller/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/pop/ros2_ws/src/install/controller/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../build/controller build --build-base /home/pop/ros2_ws/src/build/controller/build install --record /home/pop/ros2_ws/src/build/controller/install.log --single-version-externally-managed install_data --force
+[23.408s] running egg_info
+[23.588s] writing ../build/controller/controller.egg-info/PKG-INFO
+[23.592s] writing dependency_links to ../build/controller/controller.egg-info/dependency_links.txt
+[23.595s] writing entry points to ../build/controller/controller.egg-info/entry_points.txt
+[23.596s] writing requirements to ../build/controller/controller.egg-info/requires.txt
+[23.601s] writing top-level names to ../build/controller/controller.egg-info/top_level.txt
+[23.983s] reading manifest file '../build/controller/controller.egg-info/SOURCES.txt'
+[23.989s] writing manifest file '../build/controller/controller.egg-info/SOURCES.txt'
+[23.990s] running build
+[23.991s] running build_py
+[24.001s] running install
+[24.024s] running install_lib
+[24.210s] running install_data
+[24.211s] copying resource/controller -> /home/pop/ros2_ws/src/install/controller/share/ament_index/resource_index/packages
+[24.211s] copying package.xml -> /home/pop/ros2_ws/src/install/controller/share/controller
+[24.220s] running install_egg_info
+[24.403s] removing '/home/pop/ros2_ws/src/install/controller/lib/python3.12/site-packages/controller-0.0.0-py3.12.egg-info' (and everything under it)
+[24.404s] Copying ../build/controller/controller.egg-info to /home/pop/ros2_ws/src/install/controller/lib/python3.12/site-packages/controller-0.0.0-py3.12.egg-info
+[24.412s] running install_scripts
+[25.705s] Installing controller script to /home/pop/ros2_ws/src/install/controller/lib/controller
+[25.707s] writing list of installed files to '/home/pop/ros2_ws/src/build/controller/install.log'
+[25.962s] Invoked command in '/home/pop/ros2_ws/src/controller' returned '0': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/pop/ros2_ws/src/build/controller/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/pop/ros2_ws/src/install/controller/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../build/controller build --build-base /home/pop/ros2_ws/src/build/controller/build install --record /home/pop/ros2_ws/src/build/controller/install.log --single-version-externally-managed install_data --force

@@ -1,0 +1,21 @@
+[10.341s] Invoking command in '/home/pop/ros2_ws/src/image_viewer': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/pop/ros2_ws/src/build/image_viewer/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/pop/ros2_ws/src/install/image_viewer/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../build/image_viewer build --build-base /home/pop/ros2_ws/src/build/image_viewer/build install --record /home/pop/ros2_ws/src/build/image_viewer/install.log --single-version-externally-managed install_data
+[12.484s] running egg_info
+[12.645s] writing ../build/image_viewer/image_viewer.egg-info/PKG-INFO
+[12.651s] writing dependency_links to ../build/image_viewer/image_viewer.egg-info/dependency_links.txt
+[12.652s] writing entry points to ../build/image_viewer/image_viewer.egg-info/entry_points.txt
+[12.652s] writing requirements to ../build/image_viewer/image_viewer.egg-info/requires.txt
+[12.653s] writing top-level names to ../build/image_viewer/image_viewer.egg-info/top_level.txt
+[13.016s] reading manifest file '../build/image_viewer/image_viewer.egg-info/SOURCES.txt'
+[13.022s] writing manifest file '../build/image_viewer/image_viewer.egg-info/SOURCES.txt'
+[13.027s] running build
+[13.027s] running build_py
+[13.031s] running install
+[13.080s] running install_lib
+[13.280s] running install_data
+[13.285s] running install_egg_info
+[13.510s] removing '/home/pop/ros2_ws/src/install/image_viewer/lib/python3.12/site-packages/image_viewer-0.0.0-py3.12.egg-info' (and everything under it)
+[13.513s] Copying ../build/image_viewer/image_viewer.egg-info to /home/pop/ros2_ws/src/install/image_viewer/lib/python3.12/site-packages/image_viewer-0.0.0-py3.12.egg-info
+[13.529s] running install_scripts
+[15.264s] Installing image_viewer script to /home/pop/ros2_ws/src/install/image_viewer/lib/image_viewer
+[15.266s] writing list of installed files to '/home/pop/ros2_ws/src/build/image_viewer/install.log'
+[15.458s] Invoked command in '/home/pop/ros2_ws/src/image_viewer' returned '0': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/pop/ros2_ws/src/build/image_viewer/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/pop/ros2_ws/src/install/image_viewer/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../build/image_viewer build --build-base /home/pop/ros2_ws/src/build/image_viewer/build install --record /home/pop/ros2_ws/src/build/image_viewer/install.log --single-version-externally-managed install_data

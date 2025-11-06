@@ -1,0 +1,24 @@
+[13.819s] Invoking command in '/home/pop/ros2_ws/src/controller': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/pop/ros2_ws/src/build/controller/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/pop/ros2_ws/src/install/controller/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../build/controller build --build-base /home/pop/ros2_ws/src/build/controller/build install --record /home/pop/ros2_ws/src/build/controller/install.log --single-version-externally-managed install_data
+[17.084s] running egg_info
+[17.287s] writing ../build/controller/controller.egg-info/PKG-INFO
+[17.305s] writing dependency_links to ../build/controller/controller.egg-info/dependency_links.txt
+[17.329s] writing entry points to ../build/controller/controller.egg-info/entry_points.txt
+[17.339s] writing requirements to ../build/controller/controller.egg-info/requires.txt
+[17.342s] writing top-level names to ../build/controller/controller.egg-info/top_level.txt
+[17.739s] reading manifest file '../build/controller/controller.egg-info/SOURCES.txt'
+[17.744s] writing manifest file '../build/controller/controller.egg-info/SOURCES.txt'
+[17.746s] running build
+[17.755s] running build_py
+[17.773s] copying controller/controller.py -> /home/pop/ros2_ws/src/build/controller/build/lib/controller
+[17.775s] running install
+[17.782s] running install_lib
+[18.032s] copying /home/pop/ros2_ws/src/build/controller/build/lib/controller/controller.py -> /home/pop/ros2_ws/src/install/controller/lib/python3.12/site-packages/controller
+[18.048s] byte-compiling /home/pop/ros2_ws/src/install/controller/lib/python3.12/site-packages/controller/controller.py to controller.cpython-312.pyc
+[18.049s] running install_data
+[18.071s] running install_egg_info
+[18.378s] removing '/home/pop/ros2_ws/src/install/controller/lib/python3.12/site-packages/controller-0.0.0-py3.12.egg-info' (and everything under it)
+[18.405s] Copying ../build/controller/controller.egg-info to /home/pop/ros2_ws/src/install/controller/lib/python3.12/site-packages/controller-0.0.0-py3.12.egg-info
+[18.516s] running install_scripts
+[23.542s] Installing controller script to /home/pop/ros2_ws/src/install/controller/lib/controller
+[23.546s] writing list of installed files to '/home/pop/ros2_ws/src/build/controller/install.log'
+[23.994s] Invoked command in '/home/pop/ros2_ws/src/controller' returned '0': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/pop/ros2_ws/src/build/controller/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/pop/ros2_ws/src/install/controller/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../build/controller build --build-base /home/pop/ros2_ws/src/build/controller/build install --record /home/pop/ros2_ws/src/build/controller/install.log --single-version-externally-managed install_data

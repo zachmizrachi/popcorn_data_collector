@@ -1,0 +1,19 @@
+[13.891s] Invoking command in '/home/pop/ros2_ws/src/build/controller': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/pop/ros2_ws/src/build/controller/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/pop/ros2_ws/src/install/controller/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/pop/ros2_ws/src/build/controller/build --no-deps symlink_data --force
+[17.948s] running develop
+[20.674s] running egg_info
+[20.806s] writing controller.egg-info/PKG-INFO
+[20.814s] writing dependency_links to controller.egg-info/dependency_links.txt
+[20.823s] writing entry points to controller.egg-info/entry_points.txt
+[20.824s] writing requirements to controller.egg-info/requires.txt
+[20.825s] writing top-level names to controller.egg-info/top_level.txt
+[21.112s] reading manifest file 'controller.egg-info/SOURCES.txt'
+[21.115s] writing manifest file 'controller.egg-info/SOURCES.txt'
+[21.266s] running build_ext
+[21.268s] Creating /home/pop/ros2_ws/src/install/controller/lib/python3.12/site-packages/controller.egg-link (link to .)
+[21.270s] Installing controller script to /home/pop/ros2_ws/src/install/controller/lib/controller
+[21.272s] 
+[21.273s] Installed /home/pop/ros2_ws/src/build/controller
+[21.276s] running symlink_data
+[21.278s] symbolically linking /home/pop/ros2_ws/src/build/controller/resource/controller -> /home/pop/ros2_ws/src/install/controller/share/ament_index/resource_index/packages
+[21.280s] symbolically linking /home/pop/ros2_ws/src/build/controller/package.xml -> /home/pop/ros2_ws/src/install/controller/share/controller
+[21.517s] Invoked command in '/home/pop/ros2_ws/src/build/controller' returned '0': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/pop/ros2_ws/src/build/controller/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/pop/ros2_ws/src/install/controller/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/pop/ros2_ws/src/build/controller/build --no-deps symlink_data --force
