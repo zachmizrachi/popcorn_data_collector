@@ -1,0 +1,22 @@
+[10.221s] Invoking command in '/home/pop/ros2_ws/src/vision_processing': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/pop/ros2_ws/src/build/vision_processing/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/pop/ros2_ws/src/install/vision_processing/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../build/vision_processing build --build-base /home/pop/ros2_ws/src/build/vision_processing/build install --record /home/pop/ros2_ws/src/build/vision_processing/install.log --single-version-externally-managed install_data
+[13.634s] running egg_info
+[13.879s] writing ../build/vision_processing/vision_processing.egg-info/PKG-INFO
+[13.885s] writing dependency_links to ../build/vision_processing/vision_processing.egg-info/dependency_links.txt
+[13.887s] writing entry points to ../build/vision_processing/vision_processing.egg-info/entry_points.txt
+[13.891s] writing requirements to ../build/vision_processing/vision_processing.egg-info/requires.txt
+[13.892s] writing top-level names to ../build/vision_processing/vision_processing.egg-info/top_level.txt
+[14.459s] reading manifest file '../build/vision_processing/vision_processing.egg-info/SOURCES.txt'
+[14.475s] writing manifest file '../build/vision_processing/vision_processing.egg-info/SOURCES.txt'
+[14.478s] running build
+[14.479s] running build_py
+[14.488s] running install
+[14.531s] running install_lib
+[14.774s] byte-compiling /home/pop/ros2_ws/src/install/vision_processing/lib/python3.12/site-packages/vision_processing/vision_processing.py to vision_processing.cpython-312.pyc
+[14.789s] running install_data
+[14.792s] running install_egg_info
+[15.056s] removing '/home/pop/ros2_ws/src/install/vision_processing/lib/python3.12/site-packages/vision_processing-0.0.0-py3.12.egg-info' (and everything under it)
+[15.057s] Copying ../build/vision_processing/vision_processing.egg-info to /home/pop/ros2_ws/src/install/vision_processing/lib/python3.12/site-packages/vision_processing-0.0.0-py3.12.egg-info
+[15.063s] running install_scripts
+[17.069s] Installing vision_processing script to /home/pop/ros2_ws/src/install/vision_processing/lib/vision_processing
+[17.079s] writing list of installed files to '/home/pop/ros2_ws/src/build/vision_processing/install.log'
+[17.361s] Invoked command in '/home/pop/ros2_ws/src/vision_processing' returned '0': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/pop/ros2_ws/src/build/vision_processing/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/pop/ros2_ws/src/install/vision_processing/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../build/vision_processing build --build-base /home/pop/ros2_ws/src/build/vision_processing/build install --record /home/pop/ros2_ws/src/build/vision_processing/install.log --single-version-externally-managed install_data
