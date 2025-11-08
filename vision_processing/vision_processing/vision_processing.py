@@ -102,7 +102,7 @@ class VisionProcessing(Node):
                 # self.get_logger().info(f"Pixel difference percent change: {percent_change:.2f}%")
 
                 # If percent change is very small, assume no kernel present
-                if percent_change < 500:  # <-- tweak this threshold as needed
+                if percent_change < 1000:  # <-- tweak this threshold as needed
                     self.state = "wait_for_kernel"
                     self.publish_state(self.state)
                     self.debug_frame = cv2.cvtColor(gray, cv2.COLOR_GRAY2BGR)  # just publish the gray image for debug

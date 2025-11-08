@@ -73,7 +73,7 @@ class Controller(Node):
             self.single_kernel_detected()
 
         elif self.kernel_state == 'excess_kernel_detected':
-            self.current_state == 'idle'
+            self.single_kernel_detected()
             # self.dump_and_reset()
         else:
             self.get_logger().warn(f"Unknown kernel_state: {self.kernel_state}")
@@ -95,10 +95,10 @@ class Controller(Node):
         
         if self.current_state == "sys_handle_kernel_change_detect" : return
         self.current_state = "sys_handle_kernel_change_detect"
-        self.get_logger().info("✅ Change Detected! Stopping stepper, counting kernels 2 sec later...")
+        self.get_logger().info("✅ Change Detected! Stopping stepper, counting kernels 1 sec later...")
         # Stop stepper immediately (no lock)
         self.direct_send("singulator", "2")
-        self.count_kernels_delay_timer = self.create_timer(2, self.count_kernels_delay)
+        self.count_kernels_delay_timer = self.create_timer(1, self.count_kernels_delay)
 
 
     def count_kernels_delay(self): 
@@ -126,12 +126,12 @@ class Controller(Node):
         # move to popper
         self.safe_send("arm_servo", "4")
 
-        self.get_logger().info("⏱ Scheduling dump for 5 later...")
-        self.dump_timer = self.create_timer(5, self.dump)
+        self.get_logger().info("⏱ Scheduling dump for 1 later...")
+        self.dump_timer = self.create_timer(1, self.dump)
 
-        self.reset_dump_timer = self.create_timer(7, self.reset_dump)
+        self.reset_dump_timer = self.create_timer(3, self.reset_dump)
 
-        self.reset_to_singulator_timer = self.create_timer(9, self.reset_to_singulator)
+        self.reset_to_singulator_timer = self.create_timer(5, self.reset_to_singulator)
 
 
     def dump(self):
