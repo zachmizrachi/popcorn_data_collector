@@ -8,7 +8,7 @@ import cv2
 import numpy as np
 from scipy.signal import find_peaks
 from scipy.ndimage import gaussian_filter1d
-
+from std_msgs.msg import Bool
 
 class VisionProcessing(Node):
     def __init__(self):
@@ -24,6 +24,9 @@ class VisionProcessing(Node):
             self.image_callback,
             10
         )
+
+        self.reset_sub = self.create_subscription(Bool, '/vision_node_reset_signal', self.reset_callback, 10)
+
 
         # Publishers
         self.state_publisher = self.create_publisher(String, '/kernel_state', 10)
@@ -80,6 +83,9 @@ class VisionProcessing(Node):
             diff = cv2.absdiff(gray, self.ref_frame)
             diff_value = np.sum(diff)
 
+            self.get_logger().info(f"vision incoming state: {self.state}")
+
+
             # === State machine ===
             if self.state == "initializing":
                 self.init_diffs.append(diff_value)
@@ -94,7 +100,7 @@ class VisionProcessing(Node):
             elif self.state == "wait_for_kernel":
                 # Percent change
                 percent_change = ((diff_value - self.avg_diff) / self.avg_diff * 100.0) if self.avg_diff > 0 else 0
-                self.get_logger().info(f"{percent_change} percent change")
+                # self.get_logger().info(f"{percent_change} percent change")
 
                 if percent_change > self.max_percent_change:
                     self.state = "excess_kernel_detected"
@@ -177,6 +183,15 @@ class VisionProcessing(Node):
         else:
             self.get_logger().info("🟢 Single kernel detected")
             return "single_kernel_detected"
+        
+    def reset_callback(self, msg: Bool):
+        # Detect rising edge
+        if msg.data:
+            self.get_logger().info("🔄 Reset received! Performing reset...")
+            self.state = "wait_for_kernel"
+
+        # Update previous state
+        self.last_reset = msg.data
 
 
     def publish_state(self, state_str):

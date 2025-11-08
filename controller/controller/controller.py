@@ -2,6 +2,9 @@
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String
+from threading import Lock
+from std_msgs.msg import Bool
+
 
 class Controller(Node):
     def __init__(self):
@@ -10,6 +13,9 @@ class Controller(Node):
         # --- Publishers ---
         self.state_pub = self.create_publisher(String, '/system_state', 10)
         self.arduino_cmd_pub = self.create_publisher(String, '/arduino_command', 10)
+        
+        self.reset_pub = self.create_publisher(Bool, '/vision_node_reset_signal', 10)
+        self.reset_pub.publish(Bool(data=False))  # Reset "low"
 
         # --- Subscribers ---
         self.create_subscription(String, '/kernel_state', self.kernel_state_callback, 10)
@@ -17,107 +23,223 @@ class Controller(Node):
         # --- Internal state ---
         self.current_state = 'initializing'
         self.kernel_state = 'initializing'
-        self.processing_flag = False  # ensures a kernel state is processed only once
 
-        # --- Timer loop (runs at 2Hz) ---
-        self.timer = self.create_timer(0.5, self.state_loop)
-
-        # Initialize Arduino servo
-        self.send_arduino_command('3')
-
-        self.get_logger().info("🧭 Controller node started (listening to /kernel_state)")
-
-    # ============== Main Loop ==============
-    def state_loop(self):
-
-        self.state_pub.publish(String(data=self.current_state))
-
-        if self.current_state == 'idle':
-            self.get_logger().info("System in IDLE state.")
-            return
-
-        # Process kernel state only if not already processing
-        if self.processing_flag:
-            return
-
-        # Map kernel_state to handler
-        handlers = {
-            'initializing': self.handle_initializing,
-            'wait_for_kernel': self.wait_for_kernel,
-            'single_kernel_detected': self.single_kernel_detected,
-            'excess_kernel_detected': self.dump_and_reset,
-            'idle': self.idle
+        # --- Motor/device concurrency control ---
+        self.device_states = {
+            "singulator": {"lock": Lock(), "busy": False, "timer": None},
+            "arm_servo": {"lock": Lock(), "busy": False, "timer": None},
+            "dump_servo": {"lock": Lock(), "busy": False, "timer": None},
         }
 
-        handler = handlers.get(self.kernel_state, self.unknown_kernel_state)
-        handler()
+        # --- Main loop timer ---
+        self.timer = self.create_timer(0.5, self.state_loop)  # 2Hz control loop
 
-    # ============== State Handlers ==============
+        self.reset_timer = None
+
+        # Initialize Arduino servo to receive position
+        self.safe_send("arm_servo", "3", duration=1.0)
+
+        self.get_logger().info("🧭 Controller node started (with device concurrency protection)")
+
+    # ============================================================
+    # =================== MAIN LOOP ===============================
+    # ============================================================
+
+    def state_loop(self):
+        """Main control loop."""
+        self.state_pub.publish(String(data=self.current_state))
+
+        if self.current_state == 'idle' or self.current_state == "sys_handle_kernel" : 
+            return  # do nothing when idle
+        
+        if self.kernel_state == 'initializing':
+            self.handle_initializing()
+
+        elif self.kernel_state == 'wait_for_kernel':
+            self.wait_for_kernel()
+
+        elif self.kernel_state == 'single_kernel_detected':
+            self.single_kernel_detected()
+
+        elif self.kernel_state == 'excess_kernel_detected':
+            self.current_state == 'idle'
+            # self.dump_and_reset()
+        else:
+            self.get_logger().warn(f"Unknown kernel_state: {self.kernel_state}")
+
+    # ============================================================
+    # ================== STATE HANDLERS ==========================
+    # ============================================================
 
     def handle_initializing(self):
-        self.get_logger().info("Initializing — waiting for vision to stabilize.")
+        self.get_logger().debug("Initializing — waiting for vision node to stabilize.")
 
     def wait_for_kernel(self):
+        """Run the stepper until a kernel is detected."""
         self.get_logger().info("No kernel yet — running stepper...")
-        self.send_arduino_command('1')  # run stepper motor
+        self.direct_send("singulator", "1")  # immediate motor start
 
     def single_kernel_detected(self):
-        self.processing_flag = True
-        self.get_logger().info("✅ Single kernel detected! Stopping stepper.")
-        self.send_arduino_command('2')
-        self.send_arduino_command('3')
-        self.single_kernel_timer = self.create_timer(3.0, self.single_kernel_helper)
+        """Handle what happens after a single kernel is detected."""
+        self.current_state = "sys_handle_kernel"
 
-    def single_kernel_helper(self):
-        self.send_arduino_command('4')  # post-processing
-        self.current_state = "idle"
-        self.processing_flag = False
-        self.get_logger().info("🌙 Returning to idle state.")
+        self.get_logger().info("✅ Single kernel detected! Stopping stepper and moving servo.")
 
-        # Cancel and delete the timer
-        if hasattr(self, "single_kernel_timer"):
-            self.single_kernel_timer.cancel()
-            del self.single_kernel_timer
+        # Stop stepper immediately (no lock)
+        self.direct_send("singulator", "2")
 
-    def dump_and_reset(self):
-        self.processing_flag = True
-        self.get_logger().info("Excess kernel detected! Dumping and resetting.")
-        self.send_arduino_command('5')  # move to dump position
-        self.create_timer(3.0, self.dump_complete)
+        # move to popper
+        self.safe_send("arm_servo", "4")  
 
-    def dump_complete(self):
-        self.send_arduino_command('6')  # reset after dump
-        self.send_arduino_command('3')  # go back to initial position
-        self.current_state = 'idle'
-        self.processing_flag = False
-        self.get_logger().info("♻️ Dump complete. Back to idle.")
+        self.get_logger().info("⏱ Scheduling dump for 5 later...")
+        self.dump_timer = self.create_timer(5, self.dump)
+
+        self.reset_dump_timer = self.create_timer(7, self.reset_dump)
+
+        self.reset_to_singulator_timer = self.create_timer(9, self.reset_to_singulator)
+
+        self.current_state = "ready"
+
+
+
+    def dump(self):
+        """Runs after 3 seconds to continue the kernel sequence."""
+        self.safe_send("dump_servo", "5")  # dump the kernel
+        # self.get_logger().info("📨 Sent dump command '5' to dump_servo.")
+        self.dump_timer.cancel()
+        self.dump_timer = None
+
+    def reset_dump(self): 
+        self.safe_send("dump_servo", "6")  # move net to recieve position
+        self.reset_dump_timer.cancel()
+        self.reset_dump_timer = None
+
+    def reset_to_singulator(self):
+        self.safe_send("arm_servo", "3")   # reset arm to singulator position
+        self.reset_to_singulator_timer.cancel()
+        self.reset_to_singulator_timer = None
+
+        self.get_logger().info("Resetting to wait_for_kernel state.")
+        self.kernel_state = "wait_for_kernel"
+
+        self.reset_pub.publish(Bool(data=True))
+        self.get_logger().info("🔄 Sent reset pulse")
+        self.reset_pub.publish(Bool(data=False))
+
+
 
     def idle(self):
-        self.kernel_state = "idle"
+        self.current_state = "idle"
 
-    def unknown_kernel_state(self):
-        self.get_logger().warn(f"Unknown kernel_state: {self.kernel_state}")
+    # ============================================================
+    # ================ DEVICE CONCURRENCY LAYER ==================
+    # ============================================================
 
-    # ============== Callbacks & Helpers ==============
+    def safe_send(self, device: str, cmd: str, duration: float = None):
+        """
+        Safely send an Arduino command to a specific device.
+        Prevents overlapping control on the same device.
+        """
+        if device not in self.device_states:
+            self.get_logger().error(f"❌ Unknown device '{device}' for command {cmd}")
+            return
+
+        dev = self.device_states[device]
+
+        if dev["busy"]:
+            self.get_logger().warn(f"⚠ {device} is busy — ignoring command {cmd}")
+            return
+
+        last_cmd = dev.get("last_cmd")
+
+        if last_cmd == cmd:
+            return
+
+        # Lock and mark busy
+        with dev["lock"]:
+            dev["busy"] = True
+            self.send_arduino_command(cmd)
+            self.get_logger().info(f"✅ safe send command {cmd} to {device}")
+
+            if duration:
+                # Single-shot timer to release device
+                def release_and_cancel():
+                    self.release_device(device)
+                    if "timer" in dev and dev["timer"] is not None:
+                        dev["timer"].cancel()
+                        dev["timer"] = None
+
+                dev["timer"] = self.create_timer(duration, release_and_cancel)
+            else:
+                self.release_device(device)
+
+
+    def release_device(self, device: str):
+        """Mark device as idle (after a timer or action completes)."""
+        if device in self.device_states:
+            dev = self.device_states[device]
+
+            # Cancel any running timer to prevent double release
+            if "timer" in dev and dev["timer"] is not None:
+                dev["timer"].cancel()
+                dev["timer"] = None
+
+            dev["busy"] = False
+            self.get_logger().info(f"🔓 {device} released (idle again)")
+
+
+    def direct_send(self, device: str, cmd: str):
+            """
+            Immediately send a command to a device (non-blocking, no lock).
+            Used for time-critical motors like the singulator.
+            Only sends if the command differs from the previous one.
+            """
+            if device not in self.device_states:
+                self.get_logger().error(f"❌ Unknown device '{device}' for command {cmd}")
+                return
+
+            dev = self.device_states[device]
+            last_cmd = dev.get("last_cmd")
+
+            if last_cmd == cmd:
+                # self.get_logger().debug(f"↩️ Skipping duplicate command '{cmd}' for {device}")
+                return
+            
+            # Update last command and send immediately
+            dev["last_cmd"] = cmd
+            self.send_arduino_command(cmd)
+            self.get_logger().info(f"⚡ Direct send: new command '{cmd}' → {device} (no lock, immediate)")
+
+    # ============================================================
+    # ================= CALLBACKS & HELPERS ======================
+    # ============================================================
 
     def kernel_state_callback(self, msg: String):
+        """Receives kernel state from vision node."""
         new_state = msg.data
         if new_state != self.kernel_state:
             self.get_logger().info(f"🧩 Vision state changed: {self.kernel_state} → {new_state}")
-            self.kernel_state = new_state
+        self.kernel_state = new_state
+
+        # Trigger corresponding handler
+        if new_state == "single_kernel_detected":
+            self.single_kernel_detected()
+        # elif new_state == "excess_kernel_detected":
+        #     self.dump_and_reset()
 
     def send_arduino_command(self, cmd: str):
-        # try:
+        """Publish to Arduino interface node."""
         self.arduino_cmd_pub.publish(String(data=cmd))
-        #     self.get_logger().info(f"Published Arduino command: {cmd}")
-        # except Exception as e:
-        #     self.get_logger().error(f"Failed to publish Arduino command: {e}")
-
 
     def destroy_node(self):
+        """Clean up properly."""
         self.get_logger().info("Shutting down controller...")
         super().destroy_node()
 
+
+# ============================================================
+# ======================== MAIN ===============================
+# ============================================================
 
 def main(args=None):
     rclpy.init(args=args)
