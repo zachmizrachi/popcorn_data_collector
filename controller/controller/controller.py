@@ -14,8 +14,8 @@ class Controller(Node):
         self.state_pub = self.create_publisher(String, '/system_state', 10)
         self.arduino_cmd_pub = self.create_publisher(String, '/arduino_command', 10)
         
-        self.reset_pub = self.create_publisher(Bool, '/vision_node_reset_signal', 10)
-        self.reset_pub.publish(Bool(data=False))  # Reset "low"
+        self.controller_update = self.create_publisher(String, '/vision_node_update_signal', 10)
+        self.controller_update.publish(String(data="idle"))  # Reset "low"
 
         # --- Subscribers ---
         self.create_subscription(String, '/kernel_state', self.kernel_state_callback, 10)
@@ -38,6 +38,8 @@ class Controller(Node):
 
         # Initialize Arduino servo to receive position
         self.safe_send("arm_servo", "3", duration=1.0)
+        self.receive_pos = True
+
 
         self.get_logger().info("🧭 Controller node started (with device concurrency protection)")
 
@@ -49,14 +51,23 @@ class Controller(Node):
         """Main control loop."""
         self.state_pub.publish(String(data=self.current_state))
 
-        if self.current_state == 'idle' or self.current_state == "sys_handle_kernel" : 
+        if self.current_state == 'idle' or self.current_state == "sys_handle_kernel_change_detect" or self.current_state == "sys_handle_kernel_single_detect" : 
+            # self.get_logger().info(" control state loop skipped")
             return  # do nothing when idle
+        
+        if self.receive_pos == False: return
         
         if self.kernel_state == 'initializing':
             self.handle_initializing()
 
         elif self.kernel_state == 'wait_for_kernel':
             self.wait_for_kernel()
+
+        elif self.kernel_state == 'change_detected': 
+            return
+            # self.get_logger().info("... change detected, waiting 2 sec and then counting")
+            # self.count_kernels_delay_timer = self.create_timer(2, self.count_kernels_delay)
+            # self.count_kernels_delay()
 
         elif self.kernel_state == 'single_kernel_detected':
             self.single_kernel_detected()
@@ -79,12 +90,33 @@ class Controller(Node):
         self.get_logger().info("No kernel yet — running stepper...")
         self.direct_send("singulator", "1")  # immediate motor start
 
+    def change_detected(self):
+        """Handle what happens after a single kernel is detected."""
+        
+        if self.current_state == "sys_handle_kernel_change_detect" : return
+        self.current_state = "sys_handle_kernel_change_detect"
+        self.get_logger().info("✅ Change Detected! Stopping stepper, counting kernels 2 sec later...")
+        # Stop stepper immediately (no lock)
+        self.direct_send("singulator", "2")
+        self.count_kernels_delay_timer = self.create_timer(2, self.count_kernels_delay)
+
+
+    def count_kernels_delay(self): 
+        self.get_logger().info("... calling count kernels ...")
+        self.controller_update.publish(String(data="count_kernels"))
+        self.get_logger().info("🔄 Sent count kernel pulse")
+        self.controller_update.publish(String(data="idle"))
+        self.count_kernels_delay_timer.cancel()
+        self.count_kernels_delay_timer = None
+        self.current_state = "ready"
+
+
     def single_kernel_detected(self):
         """Handle what happens after a single kernel is detected."""
         
-        if self.current_state == "sys_handle_kernel" : return
+        if self.current_state == "sys_handle_kernel_single_detect" : return
 
-        self.current_state = "sys_handle_kernel"
+        self.current_state = "sys_handle_kernel_single_detect"
 
         self.get_logger().info("✅ Single kernel detected! Stopping stepper and moving servo.")
 
@@ -92,7 +124,7 @@ class Controller(Node):
         self.direct_send("singulator", "2")
 
         # move to popper
-        self.safe_send("arm_servo", "4")  
+        self.safe_send("arm_servo", "4")
 
         self.get_logger().info("⏱ Scheduling dump for 5 later...")
         self.dump_timer = self.create_timer(5, self.dump)
@@ -104,10 +136,14 @@ class Controller(Node):
 
     def dump(self):
         """Runs after 3 seconds to continue the kernel sequence."""
-        self.safe_send("dump_servo", "5")  # dump the kernel
+        if self.receive_pos == True : 
+            self.get_logger().error("NOT DUMPING -> ARM IN RECEIVE POS")
+        else : 
+            self.safe_send("dump_servo", "5")  # dump the kernel
         # self.get_logger().info("📨 Sent dump command '5' to dump_servo.")
         self.dump_timer.cancel()
         self.dump_timer = None
+
 
     def reset_dump(self): 
         self.safe_send("dump_servo", "6")  # move net to recieve position
@@ -122,14 +158,11 @@ class Controller(Node):
         self.get_logger().info("Resetting to wait_for_kernel state.")
         self.kernel_state = "wait_for_kernel"
 
-        self.reset_pub.publish(Bool(data=True))
+        self.controller_update.publish(String(data="reset"))
         self.get_logger().info("🔄 Sent reset pulse")
-        self.reset_pub.publish(Bool(data=False))
+        self.controller_update.publish(String(data="idle"))
         
         self.current_state = "ready"
-
-
-
 
     def idle(self):
         self.current_state = "idle"
@@ -163,6 +196,13 @@ class Controller(Node):
             dev["busy"] = True
             self.send_arduino_command(cmd)
             self.get_logger().info(f"✅ safe send command {cmd} to {device}")
+
+            if device == "arm_servo" : 
+                if cmd == "4" : self.receive_pos = False
+                else: self.receive_pos = True
+
+                self.get_logger().info(f"device: {device}, command: {cmd}: receive pos: {self.receive_pos}")
+
 
             if duration:
                 # Single-shot timer to release device
@@ -205,7 +245,7 @@ class Controller(Node):
             last_cmd = dev.get("last_cmd")
 
             if last_cmd == cmd:
-                # self.get_logger().debug(f"↩️ Skipping duplicate command '{cmd}' for {device}")
+                self.get_logger().debug(f"↩️ Skipping duplicate command '{cmd}' for {device}")
                 return
             
             # Update last command and send immediately
@@ -225,10 +265,12 @@ class Controller(Node):
         self.kernel_state = new_state
 
         # Trigger corresponding handler
-        if new_state == "single_kernel_detected":
-            self.single_kernel_detected()
+        if new_state == "change_detected" : 
+            self.change_detected()
+        # if new_state == "single_kernel_detected":
+        #     self.single_kernel_detected()
         # elif new_state == "excess_kernel_detected":
-        #     self.dump_and_reset()
+        #     self.single_kernel_detected()
 
     def send_arduino_command(self, cmd: str):
         """Publish to Arduino interface node."""

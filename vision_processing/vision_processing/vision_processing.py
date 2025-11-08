@@ -25,8 +25,7 @@ class VisionProcessing(Node):
             10
         )
 
-        self.reset_sub = self.create_subscription(Bool, '/vision_node_reset_signal', self.reset_callback, 10)
-
+        self.controller_callback_sub = self.create_subscription(String, '/vision_node_update_signal', self.controller_callback, 10)
 
         # Publishers
         self.state_publisher = self.create_publisher(String, '/kernel_state', 10)
@@ -48,7 +47,7 @@ class VisionProcessing(Node):
         # Initialization / calibration
         self.ref_frame = None
         self.init_diffs = []
-        self.init_frame_count = 3
+        self.init_frame_count = 10
         self.avg_diff = None
         self.state = "initializing"
 
@@ -82,9 +81,7 @@ class VisionProcessing(Node):
 
             diff = cv2.absdiff(gray, self.ref_frame)
             diff_value = np.sum(diff)
-
             self.get_logger().info(f"vision incoming state: {self.state}")
-
 
             # === State machine ===
             if self.state == "initializing":
@@ -93,23 +90,39 @@ class VisionProcessing(Node):
                 if len(self.init_diffs) >= self.init_frame_count:
                     self.avg_diff = np.mean(self.init_diffs)
                     self.state = "wait_for_kernel"
-                    self.get_logger().info(f"Initialization complete ✅ avg diff = {self.avg_diff}")
                     self.publish_state("wait_for_kernel")
+                    self.get_logger().info(f"Initialization complete ✅ avg diff = {self.avg_diff}")
                 return
 
             elif self.state == "wait_for_kernel":
-                # Percent change
-                percent_change = ((diff_value - self.avg_diff) / self.avg_diff * 100.0) if self.avg_diff > 0 else 0
-                # self.get_logger().info(f"{percent_change} percent change")
+                # --- Step 4a: Fast pixel difference check ---
+                # self.get_logger().info(f"MADE IT HERE")
+                epsilon = 1e-6  # small number to avoid division by zero
+                percent_change = ((diff_value - self.avg_diff) / (self.avg_diff + epsilon)) * 100.0
+                # self.get_logger().info(f"Pixel difference percent change: {percent_change:.2f}%")
 
-                if percent_change > self.max_percent_change:
-                    self.state = "excess_kernel_detected"
+                # If percent change is very small, assume no kernel present
+                if percent_change < 500:  # <-- tweak this threshold as needed
+                    self.state = "wait_for_kernel"
                     self.publish_state(self.state)
-                    self.get_logger().info("⚠️ EXCESS Kernel detected due to large percent change")
-                else:
-                    # Use rotated projections to detect peaks
-                    self.state = self.detect_kernels_by_projection(gray)
+                    self.debug_frame = cv2.cvtColor(gray, cv2.COLOR_GRAY2BGR)  # just publish the gray image for debug
+                    return
+                else : 
+                    self.state = "change_detected"
                     self.publish_state(self.state)
+
+                # If percent change exceeds reasonable range, immediately mark as excess
+                # elif percent_change > self.max_percent_change:
+                #     self.state = "excess_kernel_detected"
+                #     self.publish_state(self.state)
+                #     self.get_logger().info("⚠️ EXCESS Kernel detected due to large percent change")
+                #     return
+
+                # --- Step 4b: If diff indicates kernel present, run heavier projection detection ---
+                    
+            elif self.state == "count_kernels":
+                self.state = self.detect_kernels_by_projection(gray)
+                self.publish_state(self.state)
 
             # === Step 5: Publish debug image ===
             debug_msg = self.bridge.cv2_to_imgmsg(self.debug_frame, encoding='bgr8')
@@ -123,8 +136,16 @@ class VisionProcessing(Node):
         Project the foreground image along multiple lines passing through the center.
         Use image rotation + column sum for fast projection.
         """
-        # Copy image for debug visualization
+        # Convert fg_image to BGR for debug visualization
         self.debug_frame = cv2.cvtColor(fg_image, cv2.COLOR_GRAY2BGR)
+
+        # Create circular mask
+        height, width = fg_image.shape
+        mask = np.zeros((height, width), dtype=np.uint8)
+        cv2.circle(mask, (width // 2, height // 2), self.center_circle_radius, 255, -1)
+
+        # Apply mask to debug frame to make lines appear behind
+        masked_debug_frame = cv2.bitwise_and(self.debug_frame, self.debug_frame, mask=mask)
 
         # Determine mask center
         moments = cv2.moments(fg_image)
@@ -136,6 +157,9 @@ class VisionProcessing(Node):
 
         angles = np.arange(0, 180, self.projection_step_deg)
         peak_summary = {}
+
+        # Create a blank layer for lines
+        line_layer = np.zeros_like(self.debug_frame)
 
         for theta in angles:
             # Rotate image around center
@@ -153,7 +177,7 @@ class VisionProcessing(Node):
                 peak_summary[n_peaks] = 0
             peak_summary[n_peaks] += 1
 
-            # Draw the projection line on debug frame
+            # Draw the projection line on line_layer
             theta_rad = np.deg2rad(theta)
             dx = np.cos(theta_rad)
             dy = np.sin(theta_rad)
@@ -162,8 +186,11 @@ class VisionProcessing(Node):
             x2 = int(cx + dx * 100)
             y2 = int(cy + dy * 100)
             color = (0, 0, 255) if n_peaks > 1 else (0, 255, 0)
-            cv2.line(self.debug_frame, (x1, y1), (x2, y2), color, 1)
-            cv2.putText(self.debug_frame, str(n_peaks), (x2, y2), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (255, 255, 0), 1)
+            cv2.line(line_layer, (x1, y1), (x2, y2), color, 1)
+            cv2.putText(line_layer, str(n_peaks), (x2, y2), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (255, 255, 0), 1)
+
+        # Combine line_layer with masked debug frame so lines are behind the mask
+        self.debug_frame = cv2.addWeighted(line_layer, 0.6, masked_debug_frame, 1.0, 0)
 
         # Overlay peak summary
         y_offset = 20
@@ -183,12 +210,16 @@ class VisionProcessing(Node):
         else:
             self.get_logger().info("🟢 Single kernel detected")
             return "single_kernel_detected"
-        
-    def reset_callback(self, msg: Bool):
+
+    # need to change controller code to update controller_callback to change kernel state from change_detected to count_kernels
+    def controller_callback(self, msg: String):
         # Detect rising edge
-        if msg.data:
+        if msg.data == "reset":
             self.get_logger().info("🔄 Reset received! Performing reset...")
             self.state = "wait_for_kernel"
+        elif msg.data == "count_kernels": 
+            self.get_logger().info("vision node recieved switch to count_kernels from controller...")
+            self.state = "count_kernels"
 
         # Update previous state
         self.last_reset = msg.data
