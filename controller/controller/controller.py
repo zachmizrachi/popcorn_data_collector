@@ -81,6 +81,9 @@ class Controller(Node):
 
     def single_kernel_detected(self):
         """Handle what happens after a single kernel is detected."""
+        
+        if self.current_state == "sys_handle_kernel" : return
+
         self.current_state = "sys_handle_kernel"
 
         self.get_logger().info("✅ Single kernel detected! Stopping stepper and moving servo.")
@@ -97,9 +100,6 @@ class Controller(Node):
         self.reset_dump_timer = self.create_timer(7, self.reset_dump)
 
         self.reset_to_singulator_timer = self.create_timer(9, self.reset_to_singulator)
-
-        self.current_state = "ready"
-
 
 
     def dump(self):
@@ -125,6 +125,9 @@ class Controller(Node):
         self.reset_pub.publish(Bool(data=True))
         self.get_logger().info("🔄 Sent reset pulse")
         self.reset_pub.publish(Bool(data=False))
+        
+        self.current_state = "ready"
+
 
 
 
