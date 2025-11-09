@@ -44,16 +44,7 @@ class ArduinoInterfaceNode(Node):
         self.print_command_menu()
 
     def print_command_menu(self):
-        print("\n=== Command Menu ===")
-        print("1 - Run Stepper")
-        print("2 - Stop Stepper")
-        print("3 - Move Receive Servo → RECEIVE_POS")
-        print("4 - Move Receive Servo → BASE_POS")
-        print("5 - Move Dump Servo → DUMP_POS")
-        print("6 - Move Dump Servo → BASE_POS")
-        print("7 - Run DC Motor")
-        print("8 - Stop DC Motor")
-        print("q - Toggle manual/automated mode")
+        print("raspberry pi: q - Toggle manual/automated mode")
         print("====================\n")
         self.get_logger().info(f"Current mode: {'Manual' if self.manual_mode else 'Automated'}")
 
@@ -72,10 +63,10 @@ class ArduinoInterfaceNode(Node):
                     continue
 
                 if self.manual_mode:
-                    if key in [str(i) for i in range(1, 9)]:
+                    if key in [str(i) for i in range(0, 9)]:
                         self.send_command(key)
                     else:
-                        print("❓ Invalid input. Use 1–8 or q to toggle mode.")
+                        print("❓ Invalid input. Use 0–8 or q to toggle mode.")
                         self.print_command_menu()
                 else:
                     print("⚠️  Keyboard disabled in Automated mode. Press 'q' to return to Manual mode.")
