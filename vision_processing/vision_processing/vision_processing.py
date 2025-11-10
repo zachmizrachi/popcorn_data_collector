@@ -44,7 +44,7 @@ class VisionProcessing(Node):
         self.projection_step_deg = 10
         self.max_percent_change = 20000.0
         self.peak_height = 100  # Adjust this for sensitivity
-        self.peak_distance = 10  # Min distance between peaks
+        self.peak_distance = 20  # Min distance between peaks
 
         # HSV range for yellow/white detection
         self.lower_yellow = np.array([15, 50, 150])
@@ -64,7 +64,7 @@ class VisionProcessing(Node):
             cv_image = self.bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
             height, width = cv_image.shape[:2]
 
-            # === Step 1: Mask ===
+           # === Step 1: Mask ===
             mask = np.zeros((height, width), dtype=np.uint8)
             cv2.circle(mask, (width // 2, height // 2), self.center_circle_radius, 255, -1)
             masked_image = cv2.bitwise_and(cv_image, cv_image, mask=mask)
@@ -72,12 +72,26 @@ class VisionProcessing(Node):
             # === Step 2: Yellow/white filter ===
             hsv = cv2.cvtColor(masked_image, cv2.COLOR_BGR2HSV)
             yellow_mask = cv2.inRange(hsv, self.lower_yellow, self.upper_yellow)
-            yellow_filtered = cv2.bitwise_and(masked_image, masked_image, mask=yellow_mask)
 
-            # === Step 3: Blur and brightness ===
+            # --- Filter out small noise blobs ---
+            num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(yellow_mask, connectivity=8)
+            min_area = 100  # adjust as needed
+            filtered_mask = np.zeros_like(yellow_mask)
+            for i in range(1, num_labels):  # skip background
+                if stats[i, cv2.CC_STAT_AREA] >= min_area:
+                    filtered_mask[labels == i] = 255
+
+            yellow_filtered = cv2.bitwise_and(masked_image, masked_image, mask=filtered_mask)
+
+            # === Step 3: Blur, normalize, and brightness ===
             blurred = cv2.medianBlur(yellow_filtered, self.blur_ksize)
             bright = cv2.convertScaleAbs(blurred, alpha=self.brightness_factor, beta=0)
             gray = cv2.cvtColor(bright, cv2.COLOR_BGR2GRAY)
+
+            # --- Lighting compensation ---
+            gray = cv2.equalizeHist(gray)
+            gray = cv2.GaussianBlur(gray, (5, 5), 0)
+
 
             # === Step 4: Reference frame handling ===
             if self.ref_frame is None:
@@ -108,7 +122,7 @@ class VisionProcessing(Node):
                 self.get_logger().info(f"Pixel difference percent change: {percent_change:.2f}%")
 
                 # If percent change is very small, assume no kernel present
-                if percent_change < 1000:  # <-- tweak this threshold as needed
+                if percent_change < 100:  # <-- tweak this threshold as needed
                     self.state = "wait_for_kernel"
                     self.publish_state(self.state)
                     self.debug_frame = cv2.cvtColor(gray, cv2.COLOR_GRAY2BGR)  # just publish the gray image for debug
@@ -131,8 +145,9 @@ class VisionProcessing(Node):
                 self.publish_state(self.state)
 
             elif self.state == "detect_pop": 
-                self.get_logger().info("🟡 Waiting for pop 🟡")
-                self.state = self.detect_pop(gray)
+                # self.get_logger().info("🟡 Waiting for pop 🟡")
+                # self.state = self.detect_pop(gray)
+                self.state = "pop_done"
                 self.publish_state(self.state)
             
             elif self.state == "pop_done": 
@@ -151,20 +166,24 @@ class VisionProcessing(Node):
     def detect_kernels_by_projection(self, fg_image):
         """
         Project the foreground image along multiple lines passing through the center.
-        Use image rotation + column sum for fast projection.
+        Uses image rotation + column sum for fast projection.
+        Annotates the debug frame with projection info, peak count, and distances.
         """
-        # Convert fg_image to BGR for debug visualization
+        import numpy as np
+        import cv2
+        from scipy.signal import find_peaks
+        from scipy.ndimage import gaussian_filter1d
+
+        # === Prepare debug visualization ===
         self.debug_frame = cv2.cvtColor(fg_image, cv2.COLOR_GRAY2BGR)
 
         # Create circular mask
         height, width = fg_image.shape
         mask = np.zeros((height, width), dtype=np.uint8)
         cv2.circle(mask, (width // 2, height // 2), self.center_circle_radius, 255, -1)
-
-        # Apply mask to debug frame to make lines appear behind
         masked_debug_frame = cv2.bitwise_and(self.debug_frame, self.debug_frame, mask=mask)
 
-        # Determine mask center
+        # Determine center of mass (fallback to image center)
         moments = cv2.moments(fg_image)
         if moments["m00"] != 0:
             cx = int(moments["m10"] / moments["m00"])
@@ -172,29 +191,44 @@ class VisionProcessing(Node):
         else:
             cy, cx = fg_image.shape[0] // 2, fg_image.shape[1] // 2
 
+        # === Projection parameters ===
         angles = np.arange(0, 180, self.projection_step_deg)
         peak_summary = {}
+        all_peak_distances = []
 
-        # Create a blank layer for lines
+        # Create line layer for visualization
         line_layer = np.zeros_like(self.debug_frame)
+        all_peak_heights = []
 
         for theta in angles:
-            # Rotate image around center
+            # Rotate around center
             M = cv2.getRotationMatrix2D((cx, cy), theta, 1.0)
             rotated = cv2.warpAffine(fg_image, M, (fg_image.shape[1], fg_image.shape[0]), flags=cv2.INTER_LINEAR)
 
-            # Project along vertical axis (sum columns)
+            # Project along vertical axis
             projection = rotated.sum(axis=0)
             smoothed = gaussian_filter1d(projection, sigma=2)
-            peaks, _ = find_peaks(smoothed, height=self.peak_height, distance=self.peak_distance)
+            peaks, properties = find_peaks(smoothed, height=self.peak_height, distance=self.peak_distance)
             n_peaks = len(peaks)
+            peak_heights = properties['peak_heights']  # This gives an array of the heights of the detected peaks
+            all_peak_heights.extend(peak_heights)
 
-            # Update peak summary
+
+            # --- Compute and store distances between peaks ---
+            if len(peaks) > 1:
+                peak_distances = np.diff(peaks) * self.projection_step_deg
+                avg_dist = np.mean(peak_distances)
+                all_peak_distances.extend(peak_distances)
+            else:
+                peak_distances = []
+                avg_dist = None
+
+            # Update summary
             if n_peaks not in peak_summary:
                 peak_summary[n_peaks] = 0
             peak_summary[n_peaks] += 1
 
-            # Draw the projection line on line_layer
+            # --- Draw projection direction and label ---
             theta_rad = np.deg2rad(theta)
             dx = np.cos(theta_rad)
             dy = np.sin(theta_rad)
@@ -202,20 +236,45 @@ class VisionProcessing(Node):
             y1 = int(cy - dy * 100)
             x2 = int(cx + dx * 100)
             y2 = int(cy + dy * 100)
-            color = (0, 0, 255) if n_peaks > 1 else (0, 255, 0)
-            cv2.line(line_layer, (x1, y1), (x2, y2), color, 1)
-            cv2.putText(line_layer, str(n_peaks), (x2, y2), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (255, 255, 0), 1)
 
-        # Combine line_layer with masked debug frame so lines are behind the mask
+            # Color by number of peaks
+            if n_peaks > 1:
+                color = (0, 0, 255)  # red → multiple kernels
+            elif n_peaks == 1:
+                color = (0, 255, 0)  # green → single kernel
+            else:
+                color = (255, 255, 0)  # cyan → none
+
+            cv2.line(line_layer, (x1, y1), (x2, y2), color, 1)
+            label = f"{n_peaks}"
+            if avg_dist is not None:
+                label += f" ({avg_dist:.1f})"
+            cv2.putText(line_layer, label, (x2, y2), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (255, 255, 0), 1)
+
+        # === Combine layers ===
         self.debug_frame = cv2.addWeighted(line_layer, 0.6, masked_debug_frame, 1.0, 0)
 
-        # Overlay peak summary
+        # === Overlay peak summary ===
         y_offset = 20
-        for peaks, count in peak_summary.items():
-            cv2.putText(self.debug_frame, f"{count} proj with {peaks} peak(s)", (10, y_offset),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
+        for peaks, count in sorted(peak_summary.items()):
+            cv2.putText(self.debug_frame, f"{count} proj -- {peaks} peak(s)",
+                        (10, y_offset), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
             y_offset += 15
 
+        # If any distances computed, show their mean
+        if all_peak_distances:
+            mean_dist = np.mean(all_peak_distances)
+            mean_height = np.mean(all_peak_heights) if all_peak_heights else 0
+            cv2.putText(self.debug_frame, f"Avg peak dist: {mean_dist:.2f}, Avg peak height: {mean_height:.0f}",
+                        (10, y_offset + 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 1)
+        else:
+            mean_height = np.mean(all_peak_heights) if all_peak_heights else 0
+            cv2.putText(self.debug_frame, f"No valid peak distances, Avg peak height: {mean_height:.0f}",
+                        (10, y_offset + 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 1)
+
+        
+
+        # === Determine kernel state ===
         if any(k > 1 for k in peak_summary.keys()):
             self.get_logger().info("🔴 Excess kernel detected")
             return "excess_kernel_detected"
@@ -227,6 +286,7 @@ class VisionProcessing(Node):
         else:
             self.get_logger().info("🟢 Single kernel detected")
             return "single_kernel_detected"
+
 
     def detect_pop(self, img): 
 
