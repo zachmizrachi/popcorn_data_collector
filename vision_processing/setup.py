@@ -25,6 +25,7 @@ setup(
     entry_points={
         'console_scripts': [
 		'vision_processing = vision_processing.vision_processing:main',
+        'button_node = vision_processing.button_node:main',
         ],
     },
 )

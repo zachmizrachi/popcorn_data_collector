@@ -78,7 +78,7 @@ class ArduinoInterfaceNode(Node):
         """Send commands received via ROS topic only if in automated mode."""
         if not self.manual_mode:
             command = msg.data.strip()
-            if command in [str(i) for i in range(1, 9)]:
+            if command in [str(i) for i in range(0, 9)]:
                 self.send_command(command)
             else:
                 self.get_logger().warn(f"Invalid command from topic: {command}")

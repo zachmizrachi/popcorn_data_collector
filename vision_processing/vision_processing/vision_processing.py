@@ -25,7 +25,13 @@ class VisionProcessing(Node):
             10
         )
 
+        self.debug_frame = None
+
+
         self.controller_callback_sub = self.create_subscription(String, '/vision_node_update_signal', self.controller_callback, 10)
+        self.detect_pop_callback_sub = self.create_subscription(Bool, '/detect_pop_trigger', self.detect_pop_callback, 10)
+
+        self.popped = False
 
         # Publishers
         self.state_publisher = self.create_publisher(String, '/kernel_state', 10)
@@ -81,7 +87,7 @@ class VisionProcessing(Node):
 
             diff = cv2.absdiff(gray, self.ref_frame)
             diff_value = np.sum(diff)
-            self.get_logger().info(f"vision incoming state: {self.state}")
+            # self.get_logger().info(f"vision incoming state: {self.state}")
 
             # === State machine ===
             if self.state == "initializing":
@@ -99,7 +105,7 @@ class VisionProcessing(Node):
                 # self.get_logger().info(f"MADE IT HERE")
                 epsilon = 1e-6  # small number to avoid division by zero
                 percent_change = ((diff_value - self.avg_diff) / (self.avg_diff + epsilon)) * 100.0
-                # self.get_logger().info(f"Pixel difference percent change: {percent_change:.2f}%")
+                self.get_logger().info(f"Pixel difference percent change: {percent_change:.2f}%")
 
                 # If percent change is very small, assume no kernel present
                 if percent_change < 1000:  # <-- tweak this threshold as needed
@@ -124,9 +130,20 @@ class VisionProcessing(Node):
                 self.state = self.detect_kernels_by_projection(gray)
                 self.publish_state(self.state)
 
+            elif self.state == "detect_pop": 
+                self.get_logger().info("🟡 Waiting for pop 🟡")
+                self.state = self.detect_pop(gray)
+                self.publish_state(self.state)
+            
+            elif self.state == "pop_done": 
+                return
+
             # === Step 5: Publish debug image ===
-            debug_msg = self.bridge.cv2_to_imgmsg(self.debug_frame, encoding='bgr8')
-            self.debug_image_pub.publish(debug_msg)
+            if self.debug_frame is not None: 
+                debug_msg = self.bridge.cv2_to_imgmsg(self.debug_frame, encoding='bgr8')
+                self.debug_image_pub.publish(debug_msg)
+            else : 
+                self.debug_image_pub.publish(msg)
 
         except CvBridgeError as e:
             self.get_logger().error(f"CV Bridge Error: {e}")
@@ -211,6 +228,37 @@ class VisionProcessing(Node):
             self.get_logger().info("🟢 Single kernel detected")
             return "single_kernel_detected"
 
+    def detect_pop(self, img): 
+
+        # self.get_logger().info("🟡🟡🟡🟡 in detect_pop 🟡🟡🟡🟡")
+
+        if self.popped: 
+            self.get_logger().info("🟢🟢🟢🟢 Vision Node pop detected!!! 🟢🟢🟢🟢")
+            self.popped = True
+            return "pop_done"
+        else : 
+            self.popped = False
+            return "detect_pop"
+        
+
+    # def detect_pop(self, gray) : 
+
+    #     print("Press SPACE to POP!!!...")
+
+    #     # Wait until spacebar (ASCII 32) is pressed
+    #     while True:
+    #         key = cv2.waitKey(10) & 0xFF
+    #         if key == 32:  # SPACE
+    #             print("Space pressed — POPPED!!!!.")
+    #             self.state = "pop_done"
+    #             break
+    #         elif key == 27:  # ESC for optional early exit
+    #             print("ESC pressed — aborting.")
+    #             return False
+            
+
+    #     return self.state
+
     # need to change controller code to update controller_callback to change kernel state from change_detected to count_kernels
     def controller_callback(self, msg: String):
         # Detect rising edge
@@ -220,9 +268,25 @@ class VisionProcessing(Node):
         elif msg.data == "count_kernels": 
             self.get_logger().info("vision node recieved switch to count_kernels from controller...")
             self.state = "count_kernels"
+        elif msg.data == "detect_pop": 
+            self.get_logger().info("vision node recieved switch to detect_pop from controller...")
+            self.state = "detect_pop"
 
         # Update previous state
         self.last_reset = msg.data
+
+    def detect_pop_callback(self, msg):
+
+        # self.get_logger().info("IN THE DETECT_POP CALLBACK.")
+        if msg.data == True:
+            self.popped = True
+        else : 
+            self.popped = False
+
+        img = np.zeros((480, 640), dtype=np.uint8)  # 480p blank (black) image
+        self.detect_pop(img)
+
+
 
 
     def publish_state(self, state_str):

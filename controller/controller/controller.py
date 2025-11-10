@@ -38,7 +38,7 @@ class Controller(Node):
 
         # Initialize Arduino servo to receive position
         self.safe_send("arm_servo", "3", duration=1.0)
-        self.receive_pos = True
+        self.dump_safe_pos = False
 
 
         self.get_logger().info("🧭 Controller node started (with device concurrency protection)")
@@ -55,26 +55,28 @@ class Controller(Node):
             # self.get_logger().info(" control state loop skipped")
             return  # do nothing when idle
         
-        if self.receive_pos == False: return
-        
+        elif self.kernel_state == 'change_detected': 
+            return
+
+        elif self.kernel_state == 'detect_pop': 
+            return
+                
         if self.kernel_state == 'initializing':
             self.handle_initializing()
 
         elif self.kernel_state == 'wait_for_kernel':
             self.wait_for_kernel()
 
-        elif self.kernel_state == 'change_detected': 
-            return
-            # self.get_logger().info("... change detected, waiting 2 sec and then counting")
-            # self.count_kernels_delay_timer = self.create_timer(2, self.count_kernels_delay)
-            # self.count_kernels_delay()
-
         elif self.kernel_state == 'single_kernel_detected':
             self.single_kernel_detected()
 
         elif self.kernel_state == 'excess_kernel_detected':
-            self.single_kernel_detected()
+            self.dump_and_reset()
             # self.dump_and_reset()
+        elif self.kernel_state == 'pop_done': 
+            self.dump_and_reset()
+
+
         else:
             self.get_logger().warn(f"Unknown kernel_state: {self.kernel_state}")
 
@@ -126,18 +128,36 @@ class Controller(Node):
         # move to popper
         self.safe_send("arm_servo", "4")
 
-        self.get_logger().info("⏱ Scheduling dump for 1 later...")
-        self.dump_timer = self.create_timer(1, self.dump)
+        ####### wait for popper to send signal ##########
+        self.current_state = "detect_pop"
+        self.controller_update.publish(String(data="detect_pop"))
+        self.get_logger().info("🔄 Sent pulse for detect_pop")
+        self.controller_update.publish(String(data="idle"))
+        #################################################
 
+
+
+    
+    def dump_and_reset(self): 
+        # move to dump position, dump, reset to singulator
+        if self.current_state == "sys_handle_kernel_single_detect" : return
+        self.current_state = "sys_handle_kernel_change_detect"
+        self.get_logger().info("⏱ moving to dump pos in 1 sec...")
+        self.move_to_dump_timer = self.create_timer(1, self.move_to_dump)
+        self.get_logger().info("⏱ dumping in 1 sec...")
+        self.dump_timer = self.create_timer(2, self.dump)
         self.reset_dump_timer = self.create_timer(3, self.reset_dump)
-
         self.reset_to_singulator_timer = self.create_timer(5, self.reset_to_singulator)
 
+    def move_to_dump(self): 
+        self.safe_send("arm_servo", "0")  # move net to dump position
+        self.move_to_dump_timer.cancel()
+        self.move_to_dump_timer = None
 
     def dump(self):
         """Runs after 3 seconds to continue the kernel sequence."""
-        if self.receive_pos == True : 
-            self.get_logger().error("NOT DUMPING -> ARM IN RECEIVE POS")
+        if self.dump_safe_pos == False : 
+            self.get_logger().error("NOT DUMPING -> dump pos not safe")
         else : 
             self.safe_send("dump_servo", "5")  # dump the kernel
         # self.get_logger().info("📨 Sent dump command '5' to dump_servo.")
@@ -198,10 +218,10 @@ class Controller(Node):
             self.get_logger().info(f"✅ safe send command {cmd} to {device}")
 
             if device == "arm_servo" : 
-                if cmd == "4" : self.receive_pos = False
-                else: self.receive_pos = True
+                if cmd == "0" : self.dump_safe_pos = True
+                else: self.dump_safe_pos = False
 
-                self.get_logger().info(f"device: {device}, command: {cmd}: receive pos: {self.receive_pos}")
+                self.get_logger().info(f"device: {device}, command: {cmd}: dump safe pos: {self.dump_safe_pos}")
 
 
             if duration:
@@ -267,10 +287,6 @@ class Controller(Node):
         # Trigger corresponding handler
         if new_state == "change_detected" : 
             self.change_detected()
-        # if new_state == "single_kernel_detected":
-        #     self.single_kernel_detected()
-        # elif new_state == "excess_kernel_detected":
-        #     self.single_kernel_detected()
 
     def send_arduino_command(self, cmd: str):
         """Publish to Arduino interface node."""
