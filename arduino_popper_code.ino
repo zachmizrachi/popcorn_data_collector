@@ -37,6 +37,10 @@ bool stepperActivePhase = false;
 enum ArmState { ARM_AT_POP, ARM_AT_RECEIVE, ARM_AT_DUMP, UNKNOWN };
 ArmState armState = ARM_AT_RECEIVE;
 
+// === Dump State Tracking ===
+enum DumpState { DUMP_UP_POS, DUMP_DOWN_POS };
+DumpState dumpState = DUMP_UP_POS;  // initial safe position
+
 // === Timing ===
 unsigned long lastStepTime = 0;
 unsigned long phaseStartTime = 0;
@@ -45,6 +49,24 @@ const unsigned long STEPPER_OFF_TIME = 750;
 const unsigned long stepInterval = 4000;
 bool stepPinState = LOW;
 
+// Helper for readable prints
+const char* armStateToString(ArmState state) {
+  switch (state) {
+    case ARM_AT_POP: return "ARM_AT_POP";
+    case ARM_AT_RECEIVE: return "ARM_AT_RECEIVE";
+    case ARM_AT_DUMP: return "ARM_AT_DUMP";
+    default: return "UNKNOWN";
+  }
+}
+const char* dumpStateToString(DumpState state) {
+  switch (state) {
+    case DUMP_UP_POS: return "DUMP_UP_POS";
+    case DUMP_DOWN_POS: return "DUMP_DOWN_POS";
+    default: return "UNKNOWN";
+  }
+}
+
+// === Setup ===
 void setup() {
   // Stepper setup
   pinMode(stepPin, OUTPUT);
@@ -78,10 +100,10 @@ void setup() {
   Serial.println("0 = Move Arm Servo → ARM_DUMP_POS");
   Serial.println("1 = Start Stepper ON/OFF Cycle");
   Serial.println("2 = Stop Stepper Immediately");
-  Serial.println("3 = Move Arm Servo → ARM_RECEIVE_POS");
-  Serial.println("4 = Move Arm Servo → ARM_POP_POS");
-  Serial.println("5 = Move Dump Servo → DUMP_POS (Only if Arm is at ARM_DUMP_POS)");
-  Serial.println("6 = Move Dump Servo → BASE_POS");
+  Serial.println("3 = Move Arm Servo → ARM_RECEIVE_POS (only if dump is UP)");
+  Serial.println("4 = Move Arm Servo → ARM_POP_POS (only if dump is UP)");
+  Serial.println("5 = Move Dump Servo → DUMP_POS (only if Arm is at ARM_DUMP_POS)");
+  Serial.println("6 = Move Dump Servo → BASE_POS (sets dump to UP)");
   Serial.println("7 = Run DC Motor");
   Serial.println("8 = Stop DC Motor");
   Serial.println("====================");
@@ -116,22 +138,33 @@ void handleSerial() {
 }
 
 // === Stepper cycle control ===
-// (unchanged from your last version)
-void start_stepper_cycle() { /* ... same as before ... */ }
-void stop_stepper_cycle() { /* ... same as before ... */ }
-void update_stepper_cycle() { /* ... same as before ... */ }
+void start_stepper_cycle() { /* ... unchanged ... */ }
+void stop_stepper_cycle() { /* ... unchanged ... */ }
+void update_stepper_cycle() { /* ... unchanged ... */ }
 
 // === Servo functions ===
 void move_arm_to_receive() {
+  if (dumpState != DUMP_UP_POS) {
+    Serial.println("⚠️ Cannot move Arm → ARM_RECEIVE_POS: Dump not in UP position!");
+    return;
+  }
   armServo.write(ARM_RECEIVE_POS);
   armState = ARM_AT_RECEIVE;
-  Serial.println("Arm Servo → ARM_RECEIVE_POS");
+  Serial.print("Arm Servo → ARM_RECEIVE_POS | DumpState: ");
+  Serial.println(dumpStateToString(dumpState));
 }
+
 void move_arm_to_pop() {
+  if (dumpState != DUMP_UP_POS) {
+    Serial.println("⚠️ Cannot move Arm → ARM_POP_POS: Dump not in UP position!");
+    return;
+  }
   armServo.write(ARM_POP_POS);
   armState = ARM_AT_POP;
-  Serial.println("Arm Servo → ARM_POP_POS");
+  Serial.print("Arm Servo → ARM_POP_POS | DumpState: ");
+  Serial.println(dumpStateToString(dumpState));
 }
+
 void move_arm_to_dump() {
   armServo.write(ARM_DUMP_POS);
   armState = ARM_AT_DUMP;
@@ -139,16 +172,23 @@ void move_arm_to_dump() {
 }
 
 void move_dump_to_target() {
+  Serial.print("Current Arm State: ");
+  Serial.println(armStateToString(armState));
+
   if (armState != ARM_AT_DUMP) {
     Serial.println("⚠️ Cannot move Dump Servo → DUMP_POS: Arm not in ARM_DUMP_POS!");
     return;
   }
+
   dumpServo.write(DUMP_POS);
+  dumpState = DUMP_DOWN_POS;
   Serial.println("Dump Servo → DUMP_POS (Authorized)");
 }
+
 void move_dump_to_base() {
   dumpServo.write(DUMP_BASE_POS);
-  Serial.println("Dump Servo → BASE_POS");
+  dumpState = DUMP_UP_POS;
+  Serial.println("Dump Servo → BASE_POS (Dump UP)");
 }
 
 // === DC Motor functions ===
@@ -163,6 +203,7 @@ void run_dc_motor() {
   isDCMotorRunning = true;
   Serial.println("DC Motor running forward at full speed...");
 }
+
 void stop_dc_motor() {
   if (!isDCMotorRunning) {
     Serial.println("DC Motor already stopped.");
