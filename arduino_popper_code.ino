@@ -30,6 +30,7 @@ const int in2 = 7;
 
 // === Stepper Control States ===
 bool isStepperRunning = false;
+bool isStepperContinuous = false;   // continuous stepper mode
 bool isDCMotorRunning = false;
 bool stepperActivePhase = false;
 
@@ -48,6 +49,11 @@ const unsigned long STEPPER_ON_TIME  = 1000;
 const unsigned long STEPPER_OFF_TIME = 750;
 const unsigned long stepInterval = 4000;
 bool stepPinState = LOW;
+
+// === DC Motor Pulse Timing ===
+bool dcPulseActive = false;
+unsigned long dcPulseStartTime = 0;
+const unsigned long DC_PULSE_DURATION = 200;  // 0.2 sec
 
 // Helper for readable prints
 const char* armStateToString(ArmState state) {
@@ -99,19 +105,31 @@ void setup() {
   Serial.println("=== Command List ===");
   Serial.println("0 = Move Arm Servo → ARM_DUMP_POS");
   Serial.println("1 = Start Stepper ON/OFF Cycle");
-  Serial.println("2 = Stop Stepper Immediately");
+  Serial.println("2 = Stop Stepper Immediately (also stops continuous)");
   Serial.println("3 = Move Arm Servo → ARM_RECEIVE_POS (only if dump is UP)");
   Serial.println("4 = Move Arm Servo → ARM_POP_POS (only if dump is UP)");
   Serial.println("5 = Move Dump Servo → DUMP_POS (only if Arm is at ARM_DUMP_POS)");
   Serial.println("6 = Move Dump Servo → BASE_POS (sets dump to UP)");
-  Serial.println("7 = Run DC Motor");
+  Serial.println("7 = Pulse DC Motor (0.2 sec)");
   Serial.println("8 = Stop DC Motor");
+  Serial.println("C = Run Stepper Continuously (no pulsing)");
   Serial.println("====================");
 }
 
 void loop() {
   handleSerial();
   update_stepper_cycle();
+  update_dc_pulse();
+
+  // Continuous stepper mode
+  if (isStepperContinuous) {
+    unsigned long nowMicros = micros();
+    if (nowMicros - lastStepTime >= stepInterval) {
+      lastStepTime = nowMicros;
+      stepPinState = !stepPinState;
+      digitalWrite(stepPin, stepPinState);
+    }
+  }
 }
 
 // === Serial handler ===
@@ -128,8 +146,9 @@ void handleSerial() {
       case '4': move_arm_to_pop();       break;
       case '5': move_dump_to_target();   break;
       case '6': move_dump_to_base();     break;
-      case '7': run_dc_motor();          break;
+      case '7': pulse_dc_motor();        break;  // updated behavior
       case '8': stop_dc_motor();         break;
+      case 'C': run_stepper_continuous(); break;
       default:
         Serial.print("Invalid command: ");
         Serial.println(command);
@@ -138,9 +157,108 @@ void handleSerial() {
 }
 
 // === Stepper cycle control ===
-void start_stepper_cycle() { /* ... unchanged ... */ }
-void stop_stepper_cycle() { /* ... unchanged ... */ }
-void update_stepper_cycle() { /* ... unchanged ... */ }
+void start_stepper_cycle() {
+  if (isStepperRunning) {
+    Serial.println("Stepper cycle already running.");
+    return;
+  }
+
+  isStepperRunning = true;
+  stepperActivePhase = true;  // start with ON phase
+  phaseStartTime = millis();
+  lastStepTime = micros();
+
+  // enable A4988 driver (active LOW)
+  digitalWrite(enablePin, LOW);
+
+  // wake driver if sleep pin is used
+  if (sleepPin >= 0) digitalWrite(sleepPin, HIGH);
+
+  Serial.println("Stepper ON/OFF cycle started (driver enabled).");
+}
+
+void stop_stepper_cycle() {
+  if (!isStepperRunning && !isStepperContinuous) {
+    Serial.println("Stepper already stopped.");
+    return;
+  }
+
+  isStepperRunning = false;
+  isStepperContinuous = false;
+  stepperActivePhase = false;
+
+  digitalWrite(stepPin, LOW);
+  digitalWrite(enablePin, HIGH);  // disable outputs
+
+  Serial.println("Stepper stopped (all modes disabled).");
+}
+
+void update_stepper_cycle() {
+  if (!isStepperRunning) return;
+
+  unsigned long nowMillis = millis();
+
+  if (stepperActivePhase) {
+    // ON phase
+    digitalWrite(enablePin, LOW);
+    if (sleepPin >= 0) digitalWrite(sleepPin, HIGH);
+
+    // Switch to OFF phase
+    if (nowMillis - phaseStartTime >= STEPPER_ON_TIME) {
+      stepperActivePhase = false;
+      phaseStartTime = nowMillis;
+
+      digitalWrite(stepPin, LOW);
+      digitalWrite(enablePin, HIGH);  // disable outputs
+      Serial.println("Stepper OFF phase (driver disabled).");
+      return;
+    }
+
+    // Step pulses
+    unsigned long nowMicros = micros();
+    if (nowMicros - lastStepTime >= stepInterval) {
+      lastStepTime = nowMicros;
+      stepPinState = !stepPinState;
+      digitalWrite(stepPin, stepPinState);
+    }
+
+  } else {
+    // OFF phase
+    if (nowMillis - phaseStartTime >= STEPPER_OFF_TIME) {
+      stepperActivePhase = true;
+      phaseStartTime = nowMillis;
+      lastStepTime = micros();
+      digitalWrite(enablePin, LOW);  // re-enable
+      Serial.println("Stepper ON phase (driver enabled).");
+    }
+  }
+}
+
+// === Continuous stepper mode ===
+void run_stepper_continuous() {
+  if (isStepperContinuous) {
+    Serial.println("Stepper already running continuously.");
+    return;
+  }
+
+  // Stop any pulsing cycle that may be active
+  if (isStepperRunning) {
+    isStepperRunning = false;
+    stepperActivePhase = false;
+    Serial.println("Stopped pulsing cycle — switching to continuous mode.");
+  }
+
+  // Enable A4988 driver (active LOW)
+  digitalWrite(enablePin, LOW);
+  if (sleepPin >= 0) digitalWrite(sleepPin, HIGH);
+
+  isStepperContinuous = true;
+  lastStepTime = micros();
+  stepPinState = LOW;
+  digitalWrite(stepPin, LOW);
+
+  Serial.println("Stepper running continuously (driver enabled, no pulsing).");
+}
 
 // === Servo functions ===
 void move_arm_to_receive() {
@@ -192,16 +310,29 @@ void move_dump_to_base() {
 }
 
 // === DC Motor functions ===
-void run_dc_motor() {
-  if (isDCMotorRunning) {
-    Serial.println("DC Motor already running.");
+void pulse_dc_motor() {
+  if (isDCMotorRunning || dcPulseActive) {
+    Serial.println("⚠️ DC Motor already active or pulsing.");
     return;
   }
+
+  // Run DC motor forward
   digitalWrite(in1, HIGH);
   digitalWrite(in2, LOW);
   analogWrite(enA, 255);
   isDCMotorRunning = true;
-  Serial.println("DC Motor running forward at full speed...");
+  dcPulseActive = true;
+  dcPulseStartTime = millis();
+
+  Serial.println("⚡ DC Motor pulse started (0.2 sec)...");
+}
+
+void update_dc_pulse() {
+  if (dcPulseActive && millis() - dcPulseStartTime >= DC_PULSE_DURATION) {
+    stop_dc_motor();
+    dcPulseActive = false;
+    Serial.println("✅ DC Motor pulse completed.");
+  }
 }
 
 void stop_dc_motor() {
@@ -209,9 +340,11 @@ void stop_dc_motor() {
     Serial.println("DC Motor already stopped.");
     return;
   }
+
   analogWrite(enA, 0);
   digitalWrite(in1, LOW);
   digitalWrite(in2, LOW);
   isDCMotorRunning = false;
-  Serial.println("DC Motor stopped.");
+
+  Serial.println("🛑 DC Motor stopped.");
 }
