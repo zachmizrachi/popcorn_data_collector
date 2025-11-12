@@ -9,6 +9,7 @@ import numpy as np
 from scipy.signal import find_peaks
 from scipy.ndimage import gaussian_filter1d
 from std_msgs.msg import Bool
+import time
 
 class VisionProcessing(Node):
     def __init__(self):
@@ -101,8 +102,9 @@ class VisionProcessing(Node):
 
             diff = cv2.absdiff(gray, self.ref_frame)
             diff_value = np.sum(diff)
-            # self.get_logger().info(f"vision incoming state: {self.state}")
+            # self.get_logger().info(f"diff value: {diff_value}")
 
+            # return
             # === State machine ===
             if self.state == "initializing":
                 self.init_diffs.append(diff_value)
@@ -119,7 +121,24 @@ class VisionProcessing(Node):
                 # self.get_logger().info(f"MADE IT HERE")
                 epsilon = 1e-6  # small number to avoid division by zero
                 percent_change = ((diff_value - self.avg_diff) / (self.avg_diff + epsilon)) * 100.0
-                self.get_logger().info(f"Pixel difference percent change: {percent_change:.2f}%")
+                # self.get_logger().info(f"Pixel difference percent change: {percent_change:.2f}%")
+
+                # Initialize timer on first entry into this state
+                if not hasattr(self, "wait_for_kernel_start_time") or self.wait_for_kernel_start_time is None:
+                    self.wait_for_kernel_start_time = time.time()
+
+                # Compute elapsed time
+                elapsed = time.time() - self.wait_for_kernel_start_time
+
+                WAIT_DURATION = 0.5  # seconds (tweak as needed)
+                if elapsed < WAIT_DURATION:
+                    self.debug_frame = cv2.cvtColor(gray, cv2.COLOR_GRAY2BGR)
+                    return
+                else : 
+                    self.wait_for_kernel_start_time = None  # reset timer for next cycle
+
+
+
 
                 # If percent change is very small, assume no kernel present
                 if percent_change < 100:  # <-- tweak this threshold as needed
