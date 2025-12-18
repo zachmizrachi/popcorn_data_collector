@@ -64,11 +64,12 @@ class ArduinoInterfaceNode(Node):
 
                 if self.manual_mode:
                     # Accept 0–8 and 'C'/'c'
-                    valid_commands = [str(i) for i in range(0, 9)] + ['C', 'c']
+                    valid_commands = [str(i) for i in range(0, 9)] + ['C', 'c', 'O', 'F', 'o', 'f']
+                    # print("Key recieved: " + key)
                     if key in valid_commands:
                         self.send_command(key.upper())  # send uppercase 'C'
                     else:
-                        print("❓ Invalid input. Use 0–8, C, or q to toggle mode.")
+                        print("❓ Invalid input. Use 0–8, C, O, F or q to toggle mode.")
                         self.print_command_menu()
                 else:
                     print("⚠️  Keyboard disabled in Automated mode. Press 'q' to return to Manual mode.")

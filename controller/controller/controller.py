@@ -74,6 +74,7 @@ class Controller(Node):
             self.dump_and_reset()
             # self.dump_and_reset()
         elif self.kernel_state == 'pop_done': 
+            self.current_state = "idle"
             self.dump_and_reset()
 
 
@@ -128,13 +129,20 @@ class Controller(Node):
         # move to popper
         self.safe_send("arm_servo", "4")
 
+        self.detect_pop_delay_timer = self.create_timer(1, self.detect_pop_delay)
+
+        self.current_state = "idle"
+
+
+    def detect_pop_delay(self): 
+
         ####### wait for popper to send signal ##########
         self.current_state = "detect_pop"
         self.controller_update.publish(String(data="detect_pop"))
         self.get_logger().info("🔄 Sent pulse for detect_pop")
         self.controller_update.publish(String(data="idle"))
-        #################################################
-
+        self.detect_pop_delay_timer.cancel()
+        self.detect_pop_delay_timer = None
 
 
     
@@ -159,14 +167,14 @@ class Controller(Node):
         if self.dump_safe_pos == False : 
             self.get_logger().error("NOT DUMPING -> dump pos not safe")
         else : 
-            self.safe_send("dump_servo", "5")  # dump the kernel
+            self.safe_send("dump_servo", "6")  # dump the kernel
         # self.get_logger().info("📨 Sent dump command '5' to dump_servo.")
         self.dump_timer.cancel()
         self.dump_timer = None
 
 
     def reset_dump(self): 
-        self.safe_send("dump_servo", "6")  # move net to recieve position
+        self.safe_send("dump_servo", "5")  # move net to recieve position
         self.reset_dump_timer.cancel()
         self.reset_dump_timer = None
 

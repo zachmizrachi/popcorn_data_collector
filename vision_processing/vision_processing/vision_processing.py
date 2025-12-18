@@ -10,6 +10,8 @@ from scipy.signal import find_peaks
 from scipy.ndimage import gaussian_filter1d
 from std_msgs.msg import Bool
 import time
+from collections import deque
+
 
 class VisionProcessing(Node):
     def __init__(self):
@@ -27,12 +29,17 @@ class VisionProcessing(Node):
         )
 
         self.debug_frame = None
+        self.original_frame_gray = None
 
+        # ---- Rolling buffer parameters ----
+        self.lag_frames = 5
+        self.frame_buffer = deque(maxlen=self.lag_frames + 1)
 
         self.controller_callback_sub = self.create_subscription(String, '/vision_node_update_signal', self.controller_callback, 10)
-        self.detect_pop_callback_sub = self.create_subscription(Bool, '/detect_pop_trigger', self.detect_pop_callback, 10)
+        # self.detect_pop_callback_sub = self.create_subscription(Bool, '/detect_pop_trigger', self.detect_pop_callback, 10)
 
         self.popped = False
+        self.store_original_gray = True
 
         # Publishers
         self.state_publisher = self.create_publisher(String, '/kernel_state', 10)
@@ -46,10 +53,20 @@ class VisionProcessing(Node):
         self.max_percent_change = 20000.0
         self.peak_height = 100  # Adjust this for sensitivity
         self.peak_distance = 20  # Min distance between peaks
+        self.white_thresh = 100
+
+        # self.diff_threshold = 10
+        # BLUR_KSIZE = 3
+        # LOW_DIFF_THRESHOLD  = 8    # candidate change
+        # HIGH_DIFF_THRESHOLD = 25   # must exist inside blob
+        # MIN_BLOB_AREA = 100
+        # USE_HIGH_DIFF_GATE = True  # set False to ignore high-diff threshold
+
+
 
         # HSV range for yellow/white detection
-        self.lower_yellow = np.array([15, 50, 150])
-        self.upper_yellow = np.array([45, 255, 255])
+        self.lower_yellow = np.array([10, 30, 80])
+        self.upper_yellow = np.array([50, 255, 255])
 
         # Initialization / calibration
         self.ref_frame = None
@@ -58,8 +75,18 @@ class VisionProcessing(Node):
         self.avg_diff = None
         self.state = "initializing"
 
+
+
+
+
         self.get_logger().info("👁️ VisionProcessing node started (state: initializing)")
 
+    def create_center_mask(self, shape, radius):
+        h, w = shape
+        mask = np.zeros((h, w), dtype=np.uint8)
+        cv2.circle(mask, (w // 2, h // 2), radius, 255, -1)
+        return mask
+    
     def image_callback(self, msg: Image):
         try:
             cv_image = self.bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
@@ -69,20 +96,21 @@ class VisionProcessing(Node):
             mask = np.zeros((height, width), dtype=np.uint8)
             cv2.circle(mask, (width // 2, height // 2), self.center_circle_radius, 255, -1)
             masked_image = cv2.bitwise_and(cv_image, cv_image, mask=mask)
+            masked_gray = cv2.cvtColor(masked_image, cv2.COLOR_BGR2GRAY)
 
             # === Step 2: Yellow/white filter ===
             hsv = cv2.cvtColor(masked_image, cv2.COLOR_BGR2HSV)
             yellow_mask = cv2.inRange(hsv, self.lower_yellow, self.upper_yellow)
 
             # --- Filter out small noise blobs ---
-            num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(yellow_mask, connectivity=8)
-            min_area = 100  # adjust as needed
-            filtered_mask = np.zeros_like(yellow_mask)
-            for i in range(1, num_labels):  # skip background
-                if stats[i, cv2.CC_STAT_AREA] >= min_area:
-                    filtered_mask[labels == i] = 255
+            # num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(yellow_mask, connectivity=8)
+            # min_area = 100  # adjust as needed
+            # filtered_mask = np.zeros_like(yellow_mask)
+            # for i in range(1, num_labels):  # skip background
+            #     if stats[i, cv2.CC_STAT_AREA] >= min_area:
+            #         filtered_mask[labels == i] = 255
 
-            yellow_filtered = cv2.bitwise_and(masked_image, masked_image, mask=filtered_mask)
+            yellow_filtered = cv2.bitwise_and(masked_image, masked_image, mask=yellow_mask)
 
             # === Step 3: Blur, normalize, and brightness ===
             blurred = cv2.medianBlur(yellow_filtered, self.blur_ksize)
@@ -90,9 +118,8 @@ class VisionProcessing(Node):
             gray = cv2.cvtColor(bright, cv2.COLOR_BGR2GRAY)
 
             # --- Lighting compensation ---
-            gray = cv2.equalizeHist(gray)
+            # gray = cv2.equalizeHist(gray)
             gray = cv2.GaussianBlur(gray, (5, 5), 0)
-
 
             # === Step 4: Reference frame handling ===
             if self.ref_frame is None:
@@ -114,14 +141,22 @@ class VisionProcessing(Node):
                     self.state = "wait_for_kernel"
                     self.publish_state("wait_for_kernel")
                     self.get_logger().info(f"Initialization complete ✅ avg diff = {self.avg_diff}")
+
+                self.debug_frame = cv2.cvtColor(gray, cv2.COLOR_GRAY2BGR)
+                debug_msg = self.bridge.cv2_to_imgmsg(self.debug_frame, encoding='bgr8')
+                self.debug_image_pub.publish(debug_msg)
+
                 return
 
             elif self.state == "wait_for_kernel":
+                
+                self.store_original_gray = True
+
                 # --- Step 4a: Fast pixel difference check ---
                 # self.get_logger().info(f"MADE IT HERE")
                 epsilon = 1e-6  # small number to avoid division by zero
                 percent_change = ((diff_value - self.avg_diff) / (self.avg_diff + epsilon)) * 100.0
-                # self.get_logger().info(f"Pixel difference percent change: {percent_change:.2f}%")
+                self.get_logger().info(f"Pixel difference percent change: {percent_change:.2f}%")
 
                 # Initialize timer on first entry into this state
                 if not hasattr(self, "wait_for_kernel_start_time") or self.wait_for_kernel_start_time is None:
@@ -132,14 +167,10 @@ class VisionProcessing(Node):
 
                 WAIT_DURATION = 0.5  # seconds (tweak as needed)
                 if elapsed < WAIT_DURATION:
-                    self.debug_frame = cv2.cvtColor(gray, cv2.COLOR_GRAY2BGR)
                     return
                 else : 
                     self.wait_for_kernel_start_time = None  # reset timer for next cycle
-
-
-
-
+                
                 # If percent change is very small, assume no kernel present
                 if percent_change < 100:  # <-- tweak this threshold as needed
                     self.state = "wait_for_kernel"
@@ -163,14 +194,37 @@ class VisionProcessing(Node):
                 self.state = self.detect_kernels_by_projection(gray)
                 self.publish_state(self.state)
 
-            elif self.state == "detect_pop": 
-                # self.get_logger().info("🟡 Waiting for pop 🟡")
-                # self.state = self.detect_pop(gray)
-                self.state = "pop_done"
+            elif self.state == "detect_pop":
+
+                self.frame_buffer.append(gray.copy())
+
+                if len(self.frame_buffer) < self.lag_frames + 1:
+                    # self.publish_debug(gray)
+                    return
+
+                ref_frame = self.frame_buffer[0]
+                cur_frame = self.frame_buffer[-1]
+
+                mask = self.create_center_mask(gray.shape, self.center_circle_radius)
+
+                self.state, diff_vis, percent = self.detect_pop(
+                    ref_frame,
+                    cur_frame,
+                    mask,
+                    low_diff_threshold=35,
+                    high_diff_threshold=25,
+                    blur_ksize=3,
+                    min_blob_area=150,
+                    use_high_diff_gate=False
+                )
+                self.debug_frame = diff_vis
                 self.publish_state(self.state)
+                # return
             
             elif self.state == "pop_done": 
-                return
+                self.get_logger().info(f"POP DONE !!!!")
+                self.store_original_gray = True
+                # return
 
             # === Step 5: Publish debug image ===
             if self.debug_frame is not None: 
@@ -178,6 +232,8 @@ class VisionProcessing(Node):
                 self.debug_image_pub.publish(debug_msg)
             else : 
                 self.debug_image_pub.publish(msg)
+            
+            return 
 
         except CvBridgeError as e:
             self.get_logger().error(f"CV Bridge Error: {e}")
@@ -290,7 +346,6 @@ class VisionProcessing(Node):
             mean_height = np.mean(all_peak_heights) if all_peak_heights else 0
             cv2.putText(self.debug_frame, f"No valid peak distances, Avg peak height: {mean_height:.0f}",
                         (10, y_offset + 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 1)
-
         
 
         # === Determine kernel state ===
@@ -306,39 +361,73 @@ class VisionProcessing(Node):
             self.get_logger().info("🟢 Single kernel detected")
             return "single_kernel_detected"
 
+    def detect_pop(
+        self,
+        img_orig,
+        img,
+        mask,
+        low_diff_threshold=8,
+        high_diff_threshold=25,
+        blur_ksize=3,
+        min_blob_area=100,
+        use_high_diff_gate=True
+    ):
+        
+        diff = cv2.absdiff(img, img_orig)
 
-    def detect_pop(self, img): 
+        if blur_ksize > 1:
+            diff = cv2.GaussianBlur(diff, (blur_ksize, blur_ksize), 0)
 
-        # self.get_logger().info("🟡🟡🟡🟡 in detect_pop 🟡🟡🟡🟡")
+        low_mask = (diff > low_diff_threshold).astype(np.uint8) * 255
+        low_mask = cv2.bitwise_and(low_mask, mask)
 
-        if self.popped: 
-            self.get_logger().info("🟢🟢🟢🟢 Vision Node pop detected!!! 🟢🟢🟢🟢")
+        if use_high_diff_gate:
+            high_mask = (diff > high_diff_threshold).astype(np.uint8) * 255
+            high_mask = cv2.bitwise_and(high_mask, mask)
+        else:
+            high_mask = None
+
+        num_labels, labels, stats, _ = cv2.connectedComponentsWithStats(low_mask, 8)
+        clean_mask = np.zeros_like(low_mask)
+
+        for label in range(1, num_labels):
+            if stats[label, cv2.CC_STAT_AREA] < min_blob_area:
+                continue
+            component = labels == label
+            if use_high_diff_gate and not np.any(high_mask[component]):
+                continue
+            clean_mask[component] = 255
+
+        percent_changed = (
+            np.count_nonzero(clean_mask) /
+            max(np.count_nonzero(mask), 1)
+        ) * 100.0
+
+        if percent_changed > 50.0:
             self.popped = True
-            return "pop_done"
-        else : 
-            self.popped = False
-            return "detect_pop"
+
+        vis = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
+        vis[mask == 0] = 0
+        vis[clean_mask > 0] = (0, 0, 255)
+
+        if self.popped:
+            cv2.putText(vis, "POPPED!", (10, vis.shape[0] - 10),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+            return "pop_done", vis, percent_changed
+        else:
+            cv2.putText(vis, "Waiting for popped", (10, vis.shape[0] - 10),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 0, 255), 2)
+            return "detect_pop", vis, percent_changed
+
+
+    # def detect_pop(self, img_orig, img, mask,
+    #            low_diff_threshold=70,
+    #            high_diff_threshold=25,
+    #            blur_ksize=3,
+    #            min_blob_area=100,
+    #            use_high_diff_gate=False):
         
 
-    # def detect_pop(self, gray) : 
-
-    #     print("Press SPACE to POP!!!...")
-
-    #     # Wait until spacebar (ASCII 32) is pressed
-    #     while True:
-    #         key = cv2.waitKey(10) & 0xFF
-    #         if key == 32:  # SPACE
-    #             print("Space pressed — POPPED!!!!.")
-    #             self.state = "pop_done"
-    #             break
-    #         elif key == 27:  # ESC for optional early exit
-    #             print("ESC pressed — aborting.")
-    #             return False
-            
-
-    #     return self.state
-
-    # need to change controller code to update controller_callback to change kernel state from change_detected to count_kernels
     def controller_callback(self, msg: String):
         # Detect rising edge
         if msg.data == "reset":
@@ -353,20 +442,6 @@ class VisionProcessing(Node):
 
         # Update previous state
         self.last_reset = msg.data
-
-    def detect_pop_callback(self, msg):
-
-        # self.get_logger().info("IN THE DETECT_POP CALLBACK.")
-        if msg.data == True:
-            self.popped = True
-        else : 
-            self.popped = False
-
-        img = np.zeros((480, 640), dtype=np.uint8)  # 480p blank (black) image
-        self.detect_pop(img)
-
-
-
 
     def publish_state(self, state_str):
         msg = String()
