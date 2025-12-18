@@ -39,7 +39,6 @@ class VisionProcessing(Node):
         # self.detect_pop_callback_sub = self.create_subscription(Bool, '/detect_pop_trigger', self.detect_pop_callback, 10)
 
         self.popped = False
-        self.store_original_gray = True
 
         # Publishers
         self.state_publisher = self.create_publisher(String, '/kernel_state', 10)
@@ -54,6 +53,8 @@ class VisionProcessing(Node):
         self.peak_height = 100  # Adjust this for sensitivity
         self.peak_distance = 20  # Min distance between peaks
         self.white_thresh = 100
+
+        self.curr_pop_time = 0
 
         # self.diff_threshold = 10
         # BLUR_KSIZE = 3
@@ -74,6 +75,8 @@ class VisionProcessing(Node):
         self.init_frame_count = 10
         self.avg_diff = None
         self.state = "initializing"
+
+        self.pop_threshold = 35
 
 
 
@@ -150,8 +153,6 @@ class VisionProcessing(Node):
 
             elif self.state == "wait_for_kernel":
                 
-                self.store_original_gray = True
-
                 # --- Step 4a: Fast pixel difference check ---
                 # self.get_logger().info(f"MADE IT HERE")
                 epsilon = 1e-6  # small number to avoid division by zero
@@ -207,6 +208,9 @@ class VisionProcessing(Node):
 
                 mask = self.create_center_mask(gray.shape, self.center_circle_radius)
 
+                if self.curr_pop_time == 0 : 
+                    self.curr_pop_time = time.time()
+
                 self.state, diff_vis, percent = self.detect_pop(
                     ref_frame,
                     cur_frame,
@@ -222,8 +226,12 @@ class VisionProcessing(Node):
                 # return
             
             elif self.state == "pop_done": 
+                
+                self.curr_pop_time = 0
+                self.popped = False
+                self.frame_buffer.clear()
+
                 self.get_logger().info(f"POP DONE !!!!")
-                self.store_original_gray = True
                 # return
 
             # === Step 5: Publish debug image ===
@@ -403,19 +411,21 @@ class VisionProcessing(Node):
             max(np.count_nonzero(mask), 1)
         ) * 100.0
 
-        if percent_changed > 50.0:
+        if percent_changed > self.pop_threshold:
             self.popped = True
 
         vis = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
         vis[mask == 0] = 0
         vis[clean_mask > 0] = (0, 0, 255)
+        time_for_pop = int(time.time() - self.curr_pop_time)
+        info_str = f"{percent_changed:3.0f}%, {time_for_pop:2d} seconds"
 
         if self.popped:
-            cv2.putText(vis, "POPPED!", (10, vis.shape[0] - 10),
+            cv2.putText(vis, "POPPED! " + info_str, (10, vis.shape[0] - 10),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
             return "pop_done", vis, percent_changed
         else:
-            cv2.putText(vis, "Waiting for popped", (10, vis.shape[0] - 10),
+            cv2.putText(vis, "Waiting for pop: " + info_str, (10, vis.shape[0] - 10),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 0, 255), 2)
             return "detect_pop", vis, percent_changed
 

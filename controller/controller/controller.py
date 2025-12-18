@@ -74,6 +74,7 @@ class Controller(Node):
             self.dump_and_reset()
             # self.dump_and_reset()
         elif self.kernel_state == 'pop_done': 
+            self.safe_send("arm_servo", "F")
             self.current_state = "idle"
             self.dump_and_reset()
 
@@ -128,9 +129,9 @@ class Controller(Node):
 
         # move to popper
         self.safe_send("arm_servo", "4")
-
         self.detect_pop_delay_timer = self.create_timer(1, self.detect_pop_delay)
 
+        self.safe_send("arm_servo", "O")
         self.current_state = "idle"
 
 
@@ -143,8 +144,6 @@ class Controller(Node):
         self.controller_update.publish(String(data="idle"))
         self.detect_pop_delay_timer.cancel()
         self.detect_pop_delay_timer = None
-
-
     
     def dump_and_reset(self): 
         # move to dump position, dump, reset to singulator
