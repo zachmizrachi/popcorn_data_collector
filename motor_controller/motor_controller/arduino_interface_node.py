@@ -11,26 +11,35 @@ class ArduinoInterfaceNode(Node):
         super().__init__('arduino_interface_node')
 
         # === Serial setup ===
-        self.serial_port = '/dev/ttyACM0'  # Adjust if needed
+        self.serial_port = '/dev/ttyACM0'
         self.baud_rate = 9600
 
         try:
             self.arduino = serial.Serial(self.serial_port, self.baud_rate, timeout=0.1)
-            time.sleep(2)  # wait for Arduino reset
+            time.sleep(2)
             self.get_logger().info(f"✅ Connected to Arduino on {self.serial_port}")
         except serial.SerialException:
             self.get_logger().error(f"❌ Failed to connect to Arduino on {self.serial_port}")
             self.arduino = None
 
+        # === Command set (SINGLE SOURCE OF TRUTH) ===
+        self.valid_commands = {
+            '0','1','2','3','4','5','6','7','8',
+            'C','O','F','V'
+        }
+
         # State: manual (keyboard) or automated (topic)
         self.manual_mode = True
 
-        # Start keyboard listener
+        # Keyboard listener thread
         self.keep_running = True
-        self.keyboard_thread = threading.Thread(target=self.keyboard_listener, daemon=True)
+        self.keyboard_thread = threading.Thread(
+            target=self.keyboard_listener,
+            daemon=True
+        )
         self.keyboard_thread.start()
 
-        # Subscribe to topic for automated commands
+        # ROS subscription
         self.subscription = self.create_subscription(
             String,
             '/arduino_command',
@@ -38,69 +47,90 @@ class ArduinoInterfaceNode(Node):
             10
         )
 
-        # Start a timer to continuously read serial data
+        # Serial read timer
         self.create_timer(0.1, self.read_from_arduino)
 
         self.print_command_menu()
 
     def print_command_menu(self):
-        print("raspberry pi: q - Toggle manual/automated mode")
+        print("raspberry pi:")
+        print("  q  - Toggle manual / automated mode")
+        print("  Valid commands:", sorted(self.valid_commands))
         print("====================\n")
-        self.get_logger().info(f"Current mode: {'Manual' if self.manual_mode else 'Automated'}")
+        self.get_logger().info(
+            f"Current mode: {'Manual' if self.manual_mode else 'Automated'}"
+        )
 
+    # =========================
+    # Keyboard input (thread)
+    # =========================
     def keyboard_listener(self):
-        """Run in a background thread to capture keyboard input."""
         while self.keep_running:
             try:
-                key = input().strip().lower()
+                key = input().strip()
                 if not key:
                     continue
 
-                if key == 'q':
+                key = key.upper()
+
+                if key == 'Q':
                     self.manual_mode = not self.manual_mode
                     mode = 'Manual' if self.manual_mode else 'Automated'
                     print(f"🔄 Toggled mode: {mode}")
                     continue
 
-                if self.manual_mode:
-                    # Accept 0–8 and 'C'/'c'
-                    valid_commands = [str(i) for i in range(0, 9)] + ['C', 'c', 'O', 'F', 'o', 'f']
-                    # print("Key recieved: " + key)
-                    if key in valid_commands:
-                        self.send_command(key.upper())  # send uppercase 'C'
-                    else:
-                        print("❓ Invalid input. Use 0–8, C, O, F or q to toggle mode.")
-                        self.print_command_menu()
-                else:
-                    print("⚠️  Keyboard disabled in Automated mode. Press 'q' to return to Manual mode.")
+                if not self.manual_mode:
+                    print("⚠️ Keyboard disabled in Automated mode (press 'q')")
+                    continue
+
+                self.process_command(key, source="Keyboard")
 
             except Exception as e:
                 self.get_logger().error(f"Keyboard input error: {e}")
 
+    # =========================
+    # ROS topic callback
+    # =========================
     def topic_command_callback(self, msg: String):
-        """Send commands received via ROS topic only if in automated mode."""
-        if not self.manual_mode:
-            command = msg.data.strip()
-            if command in [str(i) for i in range(0, 9)]:
-                self.send_command(command)
-            else:
-                self.get_logger().warn(f"Invalid command from topic: {command}")
+        if self.manual_mode:
+            return
 
-    def send_command(self, command):
-        """Send a single-character command to Arduino."""
+        command = msg.data.strip().upper()
+        self.process_command(command, source="ROS Topic")
+
+    # =========================
+    # Unified command handler
+    # =========================
+    def process_command(self, command: str, source: str):
+        if command not in self.valid_commands:
+            self.get_logger().warn(
+                f"❓ Invalid command from {source}: {command}"
+            )
+            return
+
+        self.send_command(command)
+
+    # =========================
+    # Serial write
+    # =========================
+    def send_command(self, command: str):
         if not self.arduino:
             self.get_logger().error("Arduino not connected.")
             return
+
         try:
             self.arduino.write(command.encode())
             self.get_logger().info(f"➡ Sent command: {command}")
         except serial.SerialException as e:
             self.get_logger().error(f"Serial error: {e}")
 
+    # =========================
+    # Serial read
+    # =========================
     def read_from_arduino(self):
-        """Continuously read responses from Arduino."""
         if not self.arduino:
             return
+
         try:
             while self.arduino.in_waiting:
                 line = self.arduino.readline().decode(errors='ignore').strip()
@@ -110,7 +140,6 @@ class ArduinoInterfaceNode(Node):
             self.get_logger().error(f"Serial read error: {e}")
 
     def destroy_node(self):
-        """Clean up serial."""
         self.keep_running = False
         if self.arduino:
             self.arduino.close()

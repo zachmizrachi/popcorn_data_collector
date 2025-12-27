@@ -19,10 +19,13 @@ class Controller(Node):
 
         # --- Subscribers ---
         self.create_subscription(String, '/kernel_state', self.kernel_state_callback, 10)
+        self.create_subscription(String, '/vibrate_state', self.vibration_state_callback, 10)
+
 
         # --- Internal state ---
         self.current_state = 'initializing'
         self.kernel_state = 'initializing'
+        self.vibration_state = 'idle'
 
         # --- Motor/device concurrency control ---
         self.device_states = {
@@ -191,8 +194,17 @@ class Controller(Node):
         
         self.current_state = "ready"
 
+    def vibrate_kernel(self): 
+        self.get_logger().info("RECIEVED CALL TO vibrate KERNEL.")
+        self.safe_send("arm_servo", "V")
+
     def idle(self):
         self.current_state = "idle"
+
+
+
+
+
 
     # ============================================================
     # ================ DEVICE CONCURRENCY LAYER ==================
@@ -283,6 +295,12 @@ class Controller(Node):
     # ============================================================
     # ================= CALLBACKS & HELPERS ======================
     # ============================================================
+    
+    def vibration_state_callback(self, msg: String):
+        new_state = msg.data
+        self.get_logger().info(f"🧩 Vibration trigger: {self.vibration_state} → {new_state}")
+        self.vibrate_kernel()
+        self.vibration_state = new_state
 
     def kernel_state_callback(self, msg: String):
         """Receives kernel state from vision node."""

@@ -41,7 +41,8 @@ class VisionProcessing(Node):
         self.popped = False
 
         # Publishers
-        self.state_publisher = self.create_publisher(String, '/kernel_state', 10)
+        self.kernel_state_publisher = self.create_publisher(String, '/kernel_state', 10)
+        self.vibration_state_publisher = self.create_publisher(String, '/vibrate_state', 10)
         self.debug_image_pub = self.create_publisher(Image, '/receive_kernel_debug', 10)
 
         # Processing parameters
@@ -76,12 +77,16 @@ class VisionProcessing(Node):
         self.avg_diff = None
         self.state = "initializing"
 
+        self.vibration_state = "idle"   # idle | vibrating
+
         self.pop_threshold = 35
-
-
-
-
-
+        self.not_moving_threshold = 5.0  # percent
+        self.not_moving_count = 0
+        self.not_moving_num_frames = 10
+        self.vibrate_start_time = 0
+        self.vibrate_block_dur = 3
+        
+        self.publish_vibration_state("idle")
         self.get_logger().info("👁️ VisionProcessing node started (state: initializing)")
 
     def create_center_mask(self, shape, radius):
@@ -142,7 +147,7 @@ class VisionProcessing(Node):
                 if len(self.init_diffs) >= self.init_frame_count:
                     self.avg_diff = np.mean(self.init_diffs)
                     self.state = "wait_for_kernel"
-                    self.publish_state("wait_for_kernel")
+                    self.publish_kernel_state("wait_for_kernel")
                     self.get_logger().info(f"Initialization complete ✅ avg diff = {self.avg_diff}")
 
                 self.debug_frame = cv2.cvtColor(gray, cv2.COLOR_GRAY2BGR)
@@ -175,17 +180,17 @@ class VisionProcessing(Node):
                 # If percent change is very small, assume no kernel present
                 if percent_change < 100:  # <-- tweak this threshold as needed
                     self.state = "wait_for_kernel"
-                    self.publish_state(self.state)
+                    self.publish_kernel_state(self.state)
                     self.debug_frame = cv2.cvtColor(gray, cv2.COLOR_GRAY2BGR)  # just publish the gray image for debug
                     return
                 else : 
                     self.state = "change_detected"
-                    self.publish_state(self.state)
+                    self.publish_kernel_state(self.state)
 
                 # If percent change exceeds reasonable range, immediately mark as excess
                 # elif percent_change > self.max_percent_change:
                 #     self.state = "excess_kernel_detected"
-                #     self.publish_state(self.state)
+                #     self.publish_kernel_state(self.state)
                 #     self.get_logger().info("⚠️ EXCESS Kernel detected due to large percent change")
                 #     return
 
@@ -193,7 +198,7 @@ class VisionProcessing(Node):
                     
             elif self.state == "count_kernels":
                 self.state = self.detect_kernels_by_projection(gray)
-                self.publish_state(self.state)
+                self.publish_kernel_state(self.state)
 
             elif self.state == "detect_pop":
 
@@ -222,7 +227,7 @@ class VisionProcessing(Node):
                     use_high_diff_gate=False
                 )
                 self.debug_frame = diff_vis
-                self.publish_state(self.state)
+                self.publish_kernel_state(self.state)
                 # return
             
             elif self.state == "pop_done": 
@@ -230,7 +235,7 @@ class VisionProcessing(Node):
                 self.curr_pop_time = 0
                 self.popped = False
                 self.frame_buffer.clear()
-
+                self.not_moving_count = 0
                 self.get_logger().info(f"POP DONE !!!!")
                 # return
 
@@ -380,6 +385,32 @@ class VisionProcessing(Node):
         min_blob_area=100,
         use_high_diff_gate=True
     ):
+
+        # ---- VIBRATION STATE MACHINE ----
+
+        now = time.time()
+
+        # Trigger vibration
+        if (
+            self.vibration_state == "idle" and
+            self.not_moving_count > self.not_moving_num_frames
+        ):
+            self.vibration_state = "vibrating"
+            self.vibrate_start_time = now
+            self.publish_vibration_state("vibrate_kernel")
+
+        # End vibration
+        elif (
+            self.vibration_state == "vibrating" and
+            now - self.vibrate_start_time > self.vibrate_block_dur
+        ):
+            self.vibration_state = "idle"
+            self.vibrate_start_time = 0
+            self.publish_vibration_state("idle")
+
+
+
+
         
         diff = cv2.absdiff(img, img_orig)
 
@@ -411,14 +442,52 @@ class VisionProcessing(Node):
             max(np.count_nonzero(mask), 1)
         ) * 100.0
 
-        if percent_changed > self.pop_threshold:
+        if percent_changed < self.not_moving_threshold:
+            self.not_moving_count += 1
+        else:
+            self.not_moving_count = 0
+
+        # only send vibrate command once, start timer
+        # if self.not_moving_count > self.not_moving_num_frames and self.vibrate_start_time == 0: 
+        #     self.vibrate_start_time = time.time()
+        #     self.publish_vibration_state("vibrate_kernel")
+
+        # only trigger pop if not running vibrate command
+        # if percent_changed > self.pop_threshold and self.vibrate_start_time == 0:
+        #     self.popped = True
+
+        # if time.time() - self.vibrate_start_time > self.vibrate_block_dur :
+        #     self.vibrate_start_time = 0
+        #     self.publish_vibration_state("idle")
+
+        if (
+            percent_changed > self.pop_threshold and
+            self.vibration_state == "idle"
+        ):
             self.popped = True
+
+        self.get_logger().info(f"Vibration state: {self.vibration_state}")
 
         vis = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
         vis[mask == 0] = 0
         vis[clean_mask > 0] = (0, 0, 255)
         time_for_pop = int(time.time() - self.curr_pop_time)
-        info_str = f"{percent_changed:3.0f}%, {time_for_pop:2d} seconds"
+
+        if self.vibrate_start_time == 0: 
+            info_str = (
+                f"{percent_changed:3.0f}%, "
+                f"{time_for_pop:2d}s, "
+                f"still: {self.not_moving_count}"
+            )
+        else :
+            info_str = (
+                f"{percent_changed:3.0f}%, "
+                f"{time_for_pop:2d}s, "
+                f"still: {self.not_moving_count}"
+                f"v: {time.time() - self.vibrate_start_time}"
+            )
+
+        # info_str = f"{percent_changed:3.0f}%, {time_for_pop:2d} seconds"
 
         if self.popped:
             cv2.putText(vis, "POPPED! " + info_str, (10, vis.shape[0] - 10),
@@ -453,10 +522,15 @@ class VisionProcessing(Node):
         # Update previous state
         self.last_reset = msg.data
 
-    def publish_state(self, state_str):
+    def publish_kernel_state(self, state_str):
         msg = String()
         msg.data = state_str
-        self.state_publisher.publish(msg)
+        self.kernel_state_publisher.publish(msg)
+
+    def publish_vibration_state(self, state_str):
+        msg = String()
+        msg.data = state_str
+        self.vibration_state_publisher.publish(msg)
 
 
 def main(args=None):
